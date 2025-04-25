@@ -9,14 +9,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('chi_tiet_don_hang', function (Blueprint $table) {
-            $table->increments('ma_chi_tiet');
             $table->unsignedInteger('ma_don_hang');
             $table->unsignedInteger('ma_san_pham');
             $table->integer('so_luong');
             $table->decimal('gia', 10, 2);
+
+            $table->primary(['ma_don_hang', 'ma_san_pham']);
             $table->foreign('ma_don_hang')->references('ma_don_hang')->on('don_hang')->onDelete('cascade');
             $table->foreign('ma_san_pham')->references('ma_san_pham')->on('san_pham')->onDelete('cascade');
-            $table->timestamps();
         });
     }
 

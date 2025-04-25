@@ -10,11 +10,13 @@ return new class extends Migration
     {
         Schema::create('don_hang', function (Blueprint $table) {
             $table->increments('ma_don_hang');
-            $table->unsignedInteger('ma_tai_khoan');
-            $table->timestamp('ngay_dat')->default(DB::raw('CURRENT_TIMESTAMP'));
+            $table->unsignedBigInteger('id');
+            $table->timestamp('ngay_dat');
             $table->decimal('tong_tien', 10, 2);
-            $table->string('trang_thai');
+            $table->string('trang_thai')->default('Chờ xử lý');
             $table->timestamps();
+
+            $table->foreign('id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
