@@ -10,7 +10,7 @@ class HomeController extends Controller
 {
     public function index()
     {
-        $danhMucs = DanhMucSanPham::all(); 
+        $danhMucs = DanhMucSanPham::all();
         $danhMucSanPham = DanhMucSanPham::with('sanPhams')->get();
         return view('welcome', compact('danhMucs','danhMucSanPham'));
     }

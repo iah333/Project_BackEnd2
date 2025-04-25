@@ -15,7 +15,7 @@ return new class extends Migration
             $table->decimal('gia', 10, 2);
             $table->integer('so_luong_ton');
             $table->string('anh', 255)->nullable();
-            $table->foreign('ma_danh_muc')->references('ma_danh_muc')->on('danh_muc_san_pham')->onDelete('cascade');
+            $table->foreign('ma_danh_muc')->references('ma_danh_muc')->on('danh_muc')->onDelete('cascade');
             $table->timestamps();
         });
     }

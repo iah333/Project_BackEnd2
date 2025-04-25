@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class DanhMucSanPham extends Model
 {
-    protected $table = 'danh_muc_san_pham';
+    protected $table = 'danh_muc';
     protected $primaryKey = 'ma_danh_muc';
     public $timestamps = true;
 
@@ -17,5 +17,4 @@ class DanhMucSanPham extends Model
     {
         return $this->hasMany(SanPham::class, 'ma_danh_muc', 'ma_danh_muc');
     }
-    
 }

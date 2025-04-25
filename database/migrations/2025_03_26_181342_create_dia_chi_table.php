@@ -9,13 +9,14 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('dia_chi', function (Blueprint $table) {
-            $table->increments('ma_dia_chi');
-            $table->unsignedInteger('ma_tai_khoan');
-            $table->text('dia_chi');
-            $table->string('thanh_pho', 255);
-            $table->string('so_dien_thoai', 15)->nullable();
-            $table->foreign('ma_tai_khoan')->references('ma_tai_khoan')->on('tai_khoan')->onDelete('cascade');
+            $table->id('ma_dia_chi');
+            $table->unsignedBigInteger('id'); // FK to users
+            $table->string('dia_chi');
+            $table->string('thanh_pho');
+            $table->string('so_dien_thoai');
             $table->timestamps();
+
+            $table->foreign('id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 

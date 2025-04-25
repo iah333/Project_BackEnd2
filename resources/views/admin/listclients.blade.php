@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 @section('content')
-<h5 class="danhSach">Danh sách user</h5>
+    <h5 class="danhSach">Danh sách user</h5>
     <main class="login-form">
         <div class="container">
             <div class="row justify-content-center">
@@ -17,27 +17,23 @@
                         <tr>
                             <th>Name</th>
                             <th>Email</th>
-                            <th>Phone</th>
-                            <th>Address</th>
                             <th>Chức năng</th>
                             <th>Ảnh</th>
-
                             <th>Thao tác</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach($users as $user)
+                        @foreach ($users as $user)
                             <tr>
                                 <th>{{ $user->name }}</th>
                                 <th>{{ $user->email }}</th>
-                                <th>{{ $user->phone }}</th>
-                                <th>{{ $user->address }}</th>
                                 <th>{{ $user->is_admin }}</th>
-                                <img src="{{ asset('uploads/' . (auth()->user()->picture ?? 'default.jpg')) }}" class="profile-avatar" alt="Avatar">
+                                <th> <img src="{{ asset('avatar/' . $user->avatar) }}" class="profile-avatar" alt="Avatar">
+                                </th>
                                 <th>
-                                    <a href="" >View</a> |
-                                    <a href="" >Edit</a> |
-                                    <a href="" >Delete</a>
+                                    <a href="">View</a> |
+                                    <a href="">Edit</a> |
+                                    <a href="">Delete</a>
                                 </th>
                             </tr>
                         @endforeach

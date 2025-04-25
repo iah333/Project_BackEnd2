@@ -20,13 +20,11 @@ class DatabaseSeeder extends Seeder
         //     'email' => 'test@example.com',
         // ]);
         $user = new User;
-        $user->name ='Admin';
+        $user->name = 'Admin';
         $user->email = 'admin@gmail.com';
         $user->is_admin = true;
         $user->password = bcrypt('123456');
-        $user->phone = null;
-        $user->address = null;
-        $user->picture = null;
+        $user->avatar = null;
         $user->save();
 
         // $user = new User;

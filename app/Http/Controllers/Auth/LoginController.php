@@ -37,7 +37,6 @@ class LoginController extends Controller
             'name' => 'required',
             'email' => 'required|email|unique:users',
             'password' => 'required|string|min:6|confirmed',
-            'phone'    => 'required|string|max:20',
         ]);
 
         $data = $request->all();
@@ -45,29 +44,32 @@ class LoginController extends Controller
             'name'     => $data['name'],
             'email'    => $data['email'],
             'password' => Hash::make($data['password']),
-            'phone'    =>$data['phone'],
             'is_admin' => false,
         ]);
 
-       // Chuyển hướng sau khi đăng ký thành công
-       return redirect()->route('showlogin')->with('msg', 'Đăng ký thành công! Vui lòng đăng nhập.');
+        // Chuyển hướng sau khi đăng ký thành công
+        return redirect()->route('showlogin')->with('msg', 'Đăng ký thành công! Vui lòng đăng nhập.');
     }
-    public function detailsUser(Request $request){
+    public function detailsUser(Request $request)
+    {
         $user_id = $request->get('id');
         $user = User::find($user_id);
 
         return view('admin.detailUser',  ['user' => $user]);
     }
-    public function listUser(Request $request){
-        if(Auth::check()){
+    public function listUser(Request $request)
+    {
+        if (Auth::check()) {
             $users = User::paginate(12);
             return view('admin.listclients', ['users' => $users]);
         }
     }
-    public function showupdateA(){
+    public function showupdateA()
+    {
         return view('admin.updateadmin');
     }
-    public function updateAdmin(Request $request){
+    public function updateAdmin(Request $request)
+    {
 
         $input = $request->all();
         //Kiểm tra dữ liệu đầu vào
@@ -76,20 +78,15 @@ class LoginController extends Controller
             'name' => 'required',
             'email' => 'required|email|unique:users,email,' . $input['id'],
             'password' => 'required|min:6',
-            'phone' => 'required',
-            'address' => 'required',
-            'picture' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-       
+
         $user = User::find($input['id']);
         $user->name = $input['name'];
         $user->email = $input['email'];
         $user->password = Hash::make($input['password']);
-
-        $user->phone = $input['phone'];
-        $user->address = $input['address'];
-        $user->picture = $this->AvatarUpload($request, $user->picture);
+        $user->avatar = $this->AvatarUpload($request, $user->avatar);
 
         $user->update();
 
@@ -98,18 +95,18 @@ class LoginController extends Controller
 
     public function AvatarUpload(Request $request, $oldAvatar = null)
     {
-        if ($request->hasFile('picture')) {
+        if ($request->hasFile('avatar')) {
             // Xóa ảnh cũ nếu có
             if ($oldAvatar) {
-                $oldPath = public_path('uploads/' . $oldAvatar);
+                $oldPath = public_path(path: 'avatar/' . $oldAvatar);
                 if (File::exists($oldPath)) {
                     File::delete($oldPath);
                 }
             }
 
-            $file = $request->file('picture');
+            $file = $request->file(key: 'avatar');
             $filename = time() . '.' . $file->getClientOriginalExtension();
-            $file->move(public_path('uploads'), $filename);
+            $file->move(public_path(path: 'avatar'), $filename);
             return $filename;
         }
 

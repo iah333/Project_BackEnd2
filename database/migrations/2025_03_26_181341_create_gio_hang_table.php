@@ -10,12 +10,11 @@ return new class extends Migration
     {
         Schema::create('gio_hang', function (Blueprint $table) {
             $table->increments('ma_gio_hang');
-            $table->unsignedInteger('ma_tai_khoan');
-            $table->unsignedInteger('ma_san_pham');
-            $table->integer('so_luong');
-            $table->foreign('ma_tai_khoan')->references('ma_tai_khoan')->on('tai_khoan')->onDelete('cascade');
-            $table->foreign('ma_san_pham')->references('ma_san_pham')->on('san_pham')->onDelete('cascade');
+            $table->unsignedBigInteger('id'); // FK to users
+            $table->dateTime('ngay_tao')->default(now());
             $table->timestamps();
+
+            $table->foreign('id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
