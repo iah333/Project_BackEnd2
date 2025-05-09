@@ -48,7 +48,8 @@
         <!-- Sidebar -->
         <div class="sidebar p-3">
             <div class="d-flex align-items-center mb-4">
-                <img src="{{ asset('uploads/' . (auth()->user()->picture ?? 'default.jpg')) }}" class="user-avatar me-2" alt="Avatar">
+                <img src="{{ asset('avatar/' . (auth()->user()->avatar ?? 'default.jpg')) }}" class="user-avatar me-2"
+                    alt="Avatar">
                 <h6 class="text-white mb-0">{{ auth()->user()->name }}</h6>
             </div>
             <a href="#">Dashboard</a>
@@ -62,16 +63,21 @@
         <!-- Content -->
         <div class="content flex-grow-1">
             <!-- Navbar with user dropdown -->
-            <nav class="navbar navbar-light bg-light mb-4 rounded shadow-sm px-4 d-flex justify-content-between align-items-center">
+            <nav
+                class="navbar navbar-light bg-light mb-4 rounded shadow-sm px-4 d-flex justify-content-between align-items-center">
                 <span class="navbar-brand">Admin Panel</span>
 
                 <div class="dropdown">
-                    <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+                    <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle"
+                        id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         <span class="me-2">{{ auth()->user()->name }}</span>
-                        <img src="{{ asset('uploads/' . (auth()->user()->picture ?? 'default.jpg')) }}" alt="Avatar" class="user-avatar">
+                        <img src="{{ asset('avatar/' . (auth()->user()->avatar ?? 'default.jpg')) }}"
+                            class="user-avatar me-2" alt="Avatar">
+
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
-                        <li><a class="dropdown-item" href="{{ Route('detailsUser') }}">Thông tin cá nhân</a></li>
+                        <li><a class="dropdown-item" href="{{ Route('detailsUser') }}">Thông tin cá nhân</a>
+                        </li>
                         <li><a class="dropdown-item" href="#">Cài đặt</a></li>
                         <li>
                             <hr class="dropdown-divider">
@@ -85,11 +91,9 @@
                     </ul>
                 </div>
             </nav>
-
             @yield('content')
         </div>
     </div>
-
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 

@@ -8,20 +8,20 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('don_hang', function (Blueprint $table) {
-            $table->increments('ma_don_hang');
-            $table->unsignedBigInteger('id');
-            $table->timestamp('ngay_dat');
+        Schema::create('donhang', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('user_id');
+            $table->dateTime('ngay_dat');
             $table->decimal('tong_tien', 10, 2);
-            $table->string('trang_thai')->default('Chờ xử lý');
+            $table->string('trang_thai')->default('chờ xử lý');
             $table->timestamps();
 
-            $table->foreign('id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('don_hang');
+        Schema::dropIfExists('donhang');
     }
 };

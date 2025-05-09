@@ -73,12 +73,12 @@ class LoginController extends Controller
 
         $input = $request->all();
         //Kiểm tra dữ liệu đầu vào
-        $fileName = $this->AvatarUpload($request);
+
         $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users,email,' . $input['id'],
             'password' => 'required|min:6',
-            'avatar' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
 
@@ -90,7 +90,7 @@ class LoginController extends Controller
 
         $user->update();
 
-        return redirect("detailUser")->withSuccess('You have signed-in');
+        return redirect("detailsUser")->withSuccess('You have signed-in');
     }
 
     public function AvatarUpload(Request $request, $oldAvatar = null)

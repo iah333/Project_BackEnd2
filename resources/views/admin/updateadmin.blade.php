@@ -12,7 +12,7 @@
                     <div class="card">
                         <h3 class="card-header text-center">Update User</h3>
                         <div class="card-body">
-                            <form action=" {{ Route('updateadmin') }}" method="POST" enctype="multipart/form-data">
+                            <form action=" {{ Route('updateAdmin') }}" method="POST" enctype="multipart/form-data">
                                 @csrf
                                 <input name="id" type="hidden" value="{{ auth()->user()->id }}">
 
@@ -57,7 +57,7 @@
                                     <div class="col-md-6">
                                         <input id="avatar" type="file"
                                             class="form-control @error('avatar') is-invalid @enderror" name="avatar"
-                                            value="{{ old('avatar') }}" required autocomplete="avatar">
+                                            value="{{ old('avatar') }}" autocomplete="avatar">
                                         <img src="{{ asset('avatar/' . auth()->user()->avatar) }}" width="70px"
                                             height="70px" alt="avatar">
                                         @error('avatar')
@@ -80,6 +80,7 @@
                                         <div class="" style="text-align: right; margin-right: 50px">
                                             <button type="submit" class="btn btn-primary btn-block">Cập Nhật</button>
                                         </div>
+                                    </div>
                             </form>
                         </div>
                     </div>
