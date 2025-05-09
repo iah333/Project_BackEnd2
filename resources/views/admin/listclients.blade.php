@@ -1,19 +1,19 @@
 @extends('layouts.admin')
+
 @section('content')
-    <h5 class="danhSach">Danh sách user</h5>
-    <main class="login-form">
-        <div class="container">
-            <div class="row justify-content-center">
+    <div class="container mt-4">
+        <h5 class="mb-4">Danh sách user</h5>
 
-                @if (Session::has('success'))
-                    <div class="alert alert-success">
-                        <i class="fas fa-check-circle"></i> {{ Session::get('success') }}
-                    </div>
-                @endif
+        @if (Session::has('success'))
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle"></i> {{ Session::get('success') }}
+            </div>
+        @endif
 
-
-                <table>
-                    <thead>
+        <div class="card">
+            <div class="card-body p-0">
+                <table class="table mb-0">
+                    <thead class="table-light">
                         <tr>
                             <th>Name</th>
                             <th>Email</th>
@@ -25,22 +25,38 @@
                     <tbody>
                         @foreach ($users as $user)
                             <tr>
-                                <th>{{ $user->name }}</th>
-                                <th>{{ $user->email }}</th>
-                                <th>{{ $user->is_admin }}</th>
-                                <th> <img src="{{ asset('avatar/' . $user->avatar) }}" class="profile-avatar" alt="Avatar">
-                                </th>
+                                <td>{{ $user->name }}</td>
+                                <td>{{ $user->email }}</td>
                                 <th>
-                                    <a href="">View</a> |
-                                    <a href="">Edit</a> |
-                                    <a href="">Delete</a>
+                                    @if ($user->is_admin)
+                                        <span style="color: green; font-weight: bold;">Admin</span>
+                                    @else
+                                        <span style="color: gray;">User</span>
+                                    @endif
                                 </th>
+
+                                <td>
+                                    <img src="{{ asset('avatar/' . $user->avatar) }}" width="50" height="50"
+                                        alt="avatar">
+                                </td>
+                                <td>
+                                    <a href="" {{ $user->id }} class="btn btn-info btn-sm">Xem</a>
+                                    <a href="" {{ $user->id }} class="btn btn-warning btn-sm">Sửa</a>
+                                    <form action="" {{ $user->id }} method="POST" class="d-inline">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
+                                    </form>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>
                 </table>
             </div>
-            <div style="text-align: center;" class="link">{{ $users->links() }}</div>
         </div>
-    </main>
+
+        <div class="mt-3 d-flex justify-content-center">
+            {{ $users->links() }}
+        </div>
+    </div>
 @endsection

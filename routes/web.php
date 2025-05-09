@@ -1,8 +1,9 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\SanPhamController; 
-use App\Http\Controllers\DanhMucSanPhamController; 
+use App\Http\Controllers\SanPhamController;
+use App\Http\Controllers\DanhMucSanPhamController;
 
 //Trang chủ
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -28,11 +29,11 @@ Route::prefix('admin')->middleware(['auth', 'auth.login'])->group(function () {
     // Resource sản phẩm
     Route::resource('san-pham', SanPhamController::class)->names('sanPham');
 });
-Route::get('login',[LoginController::class, 'Showlogin'])->name('showlogin');
-Route::post('login',[LoginController::class, 'Login'])->name('login');
+Route::get('login', [LoginController::class, 'Showlogin'])->name('showlogin');
+Route::post('login', [LoginController::class, 'Login'])->name('login');
 
 //Đăng kí
-Route::get('register', function() {
+Route::get('register', function () {
     return view('auth.register');
 });
 Route::post('register', [LoginController::class, 'register'])->name('register');
@@ -42,12 +43,14 @@ Route::post('register', [LoginController::class, 'register'])->name('register');
 Route::get('signout', [LoginController::class, 'signOut'])->name('signout');
 
 //Detail User
-Route::get('detailsuser', [LoginController::class, 'detailsUser'])->name('detailsUser');
+Route::get('detailsUser', [LoginController::class, 'detailsUser'])->name('detailsUser');
+
 
 Route::get('listUser', [LoginController::class, 'listUser'])->name('listUser');
 
 Route::get('admin/update', [LoginController::class, 'showupdatea'])->name('showupdatea');
-Route::post('admin/update', [LoginController::class, 'updateadmin'])->name('updateadmin');
+Route::post('admin/update', [LoginController::class, 'updateAdmin'])->name('updateAdmin');
+
 
 
 
