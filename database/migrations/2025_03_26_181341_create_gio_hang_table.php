@@ -8,18 +8,17 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('gio_hang', function (Blueprint $table) {
-            $table->increments('ma_gio_hang');
-            $table->unsignedBigInteger('id'); // FK to users
-            $table->dateTime('ngay_tao')->default(now());
+        Schema::create('giohang', function (Blueprint $table) {
+            $table->id();
+            $table->unsignedBigInteger('user_id');
             $table->timestamps();
 
-            $table->foreign('id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('gio_hang');
+        Schema::dropIfExists('giohang');
     }
 };

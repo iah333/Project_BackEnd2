@@ -8,15 +8,15 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('danh_muc', function (Blueprint $table) {
-            $table->increments('ma_danh_muc');
-            $table->string('ten_danh_muc', 255);
+        Schema::create('danhmuc', function (Blueprint $table) {
+            $table->id();
+            $table->string('ten_danh_muc');
             $table->timestamps();
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('danh_muc');
+        Schema::dropIfExists('danhmuc');
     }
 };

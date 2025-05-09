@@ -8,20 +8,22 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('chi_tiet_don_hang', function (Blueprint $table) {
-            $table->unsignedInteger('ma_don_hang');
-            $table->unsignedInteger('ma_san_pham');
+
+        Schema::create('chitietdonhang', function (Blueprint $table) {
+            $table->unsignedBigInteger('donhang_id');
+            $table->unsignedBigInteger('sanpham_id');
             $table->integer('so_luong');
             $table->decimal('gia', 10, 2);
 
-            $table->primary(['ma_don_hang', 'ma_san_pham']);
-            $table->foreign('ma_don_hang')->references('ma_don_hang')->on('don_hang')->onDelete('cascade');
-            $table->foreign('ma_san_pham')->references('ma_san_pham')->on('san_pham')->onDelete('cascade');
+            $table->primary(['donhang_id', 'sanpham_id']);
+
+            $table->foreign('donhang_id')->references('id')->on('donhang')->onDelete('cascade');
+            $table->foreign('sanpham_id')->references('id')->on('sanpham')->onDelete('cascade');
         });
     }
 
     public function down(): void
     {
-        Schema::dropIfExists('chi_tiet_don_hang');
+        Schema::dropIfExists('chitietdonhang');
     }
 };
