@@ -29,16 +29,16 @@ class SanPhamController extends Controller
                 'ten_san_pham' => 'required|string|max:255',
                 'gia' => 'required|numeric|min:0',
                 'so_luong_ton' => 'required|integer|min:0',
-                'ma_danh_muc' => 'required|exists:danh_muc_san_pham,ma_danh_muc',
+                'danhmuc_id' => 'required|exists:danhmuc,id', // Cập nhật rule exists
                 'anh' => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
             ], [
-                'ma_danh_muc.exists' => 'Danh mục được chọn không tồn tại. Vui lòng chọn lại.',
+                'danhmuc_id.exists' => 'Danh mục được chọn không tồn tại. Vui lòng chọn lại.',
             ]);
 
             $data = $request->all();
             if ($request->hasFile('anh')) {
-                $danhMuc = DanhMucSanPham::findOrFail($request->ma_danh_muc);
-                $folder = 'img/' . ($danhMuc->folder_name ?? $danhMuc->ten_danh_muc);
+                $danhMuc = DanhMucSanPham::findOrFail($request->danhmuc_id); // Sử dụng danhmuc_id
+                $folder = 'img/' . ($danhMuc->folder_name ?? $danhMuc->id);
 
                 if (!File::exists(public_path($folder))) {
                     return back()->withErrors(['anh' => 'Thư mục ' . $folder . ' không tồn tại. Vui lòng tạo thư mục trước khi upload ảnh.']);
@@ -65,13 +65,11 @@ class SanPhamController extends Controller
         $sanPham = SanPham::with('danhMuc')->findOrFail($ma_san_pham);
         $danhMucs = DanhMucSanPham::all();
 
-        // Nếu là admin, trả về view admin
         if (Auth::check() && Auth::user()->is_admin) {
             \Log::info('User is admin, showing admin view');
             return view('admin.san-pham.show', compact('sanPham', 'danhMucs'));
         }
 
-        // Nếu là người dùng thường, trả về view chi tiết
         \Log::info('User is not admin, showing chi-tiet view');
         return view('san-pham.chi-tiet', compact('sanPham'));
     }
@@ -89,7 +87,7 @@ class SanPhamController extends Controller
             'ten_san_pham' => 'required|string|max:255',
             'gia' => 'required|numeric',
             'so_luong_ton' => 'required|integer',
-            'ma_danh_muc' => 'required|exists:danh_muc_san_pham,ma_danh_muc',
+            'danhmuc_id' => 'required|exists:danhmuc,id', // Cập nhật rule exists
             'anh' => 'nullable|image|max:2048',
         ]);
 
@@ -100,8 +98,8 @@ class SanPhamController extends Controller
                 File::delete(public_path($sanPham->anh));
             }
 
-            $danhMuc = DanhMucSanPham::findOrFail($request->ma_danh_muc);
-            $folder = 'img/' . $danhMuc->ten_danh_muc;
+            $danhMuc = DanhMucSanPham::findOrFail($request->danhmuc_id); // Sử dụng danhmuc_id
+            $folder = 'img/' . ($danhMuc->ten_danh_muc ?? $danhMuc->id);
 
             if (!File::exists(public_path($folder))) {
                 return back()->withErrors(['anh' => 'Thư mục ' . $folder . ' không tồn tại. Vui lòng tạo thư mục trước khi upload ảnh.']);

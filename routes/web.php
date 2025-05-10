@@ -4,6 +4,8 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\SanPhamController;
 use App\Http\Controllers\DanhMucSanPhamController;
+use App\Http\Controllers\GioHangController;
+
 
 //Trang chủ
 Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
@@ -16,6 +18,9 @@ Route::get('/danh-muc/{slug}', [App\Http\Controllers\DanhMucSanPhamController::c
 
 Route::get('/san-pham/{ma_san_pham}', [SanPhamController::class, 'show'])->name('san-pham.show');
 
+//
+Route::post('/gio-hang/them/{ma_san_pham}', [App\Http\Controllers\GioHangController::class, 'them'])->name('gio-hang.them')->middleware('auth');
+
 //Middleware Auth
 // Admin routes
 Route::prefix('admin')->middleware(['auth', 'auth.login'])->group(function () {
@@ -24,10 +29,14 @@ Route::prefix('admin')->middleware(['auth', 'auth.login'])->group(function () {
     })->name('admin');
 
     // Resource danh mục
-    Route::resource('danh-muc', DanhMucSanPhamController::class)->names('danhMuc');
+    Route::resource('danh-muc', DanhMucSanPhamController::class)
+        ->names('danhMuc')
+        ->parameters(['danh-muc' => 'danhmuc']);
 
     // Resource sản phẩm
-    Route::resource('san-pham', SanPhamController::class)->names('sanPham');
+    Route::resource('san-pham', SanPhamController::class)
+    ->names('sanPham')
+    ->parameters(['san-pham' => 'sanpham']);
 });
 Route::get('login', [LoginController::class, 'Showlogin'])->name('showlogin');
 Route::post('login', [LoginController::class, 'Login'])->name('login');
@@ -54,6 +63,8 @@ Route::post('admin/update', [LoginController::class, 'updateAdmin'])->name('upda
 
 
 
-Route::get('/test-create', function () {
-    return view('admin.san-pham.create', ['danhMucs' => \App\Models\DanhMucSanPham::all()]);
-});
+//Cart
+Route::get('/gio-hang', [GioHangController::class, 'showCart'])->name('gioHang.show');
+Route::post('/gio-hang/them/{ma_san_pham}', [GioHangController::class, 'them'])->name('gioHang.them');
+Route::patch('/gio-hang/cap-nhat/{ma_san_pham}', [GioHangController::class, 'update'])->name('gioHang.update');
+Route::delete('/gio-hang/xoa/{ma_san_pham}', [GioHangController::class, 'remove'])->name('gioHang.remove');

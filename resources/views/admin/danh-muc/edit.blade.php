@@ -6,7 +6,7 @@
         <h5>Sửa danh mục</h5>
     </div>
     <div class="card-body">
-        <form action="{{ route('danhMuc.update', $danhMuc->ma_danh_muc) }}" method="POST">
+        <form action="{{ route('danhMuc.update', $danhMuc->id) }}" method="POST">
             @csrf
             @method('PUT')
             <div class="mb-3">

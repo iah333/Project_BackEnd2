@@ -46,4 +46,8 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function gioHangs()
+    {
+        return $this->hasMany(GioHang::class, 'id', 'id'); // Thay 'id' bằng tên cột thực tế
+    }
 }

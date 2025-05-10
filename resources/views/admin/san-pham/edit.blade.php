@@ -10,15 +10,15 @@
               @csrf
               @method('PUT')
               <div class="mb-3">
-                  <label for="ma_danh_muc" class="form-label">Danh mục</label>
-                  <select name="ma_danh_muc" id="ma_danh_muc" class="form-control">
+                  <label for="id" class="form-label">Danh mục</label>
+                  <select name="id" id="id" class="form-control">
                       @foreach ($danhMucs as $danhMuc)
-                          <option value="{{ $danhMuc->ma_danh_muc }}" {{ $danhMuc->ma_danh_muc == $sanPham->ma_danh_muc ? 'selected' : '' }}>
+                          <option value="{{ $danhMuc->id }}" {{ $danhMuc->id == $sanPham->id ? 'selected' : '' }}>
                               {{ $danhMuc->ten_danh_muc }}
                           </option>
                       @endforeach
                   </select>
-                  @error('ma_danh_muc')
+                  @error('id')
                       <div class="text-danger">{{ $message }}</div>
                   @enderror
               </div>
