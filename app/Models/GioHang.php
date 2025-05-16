@@ -10,11 +10,11 @@ class GioHang extends Model
     protected $primaryKey = 'id';
     public $timestamps = false;
 
-    protected $fillable = ['user_id', 'so_luong'];
+    protected $fillable = ['user_id'];
 
     public function sanPhams()
     {
-        return $this->belongsToMany(SanPham::class, 'giohang_sanpham', 'id', 'sanpham_id')
+        return $this->belongsToMany(SanPham::class, 'giohang_sanpham', 'giohang_id', 'sanpham_id')
                    ->withPivot('so_luong');
     }
 

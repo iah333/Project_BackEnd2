@@ -44,18 +44,18 @@
                             <td>{{ $item->ten_san_pham }}</td>
                             <td>{{ number_format($item->gia, 0, ',', '.') }} VNĐ</td>
                             <td>
-                                <form action="{{ route('gioHang.update', $item->ma_san_pham) }}" method="POST" class="d-flex align-items-center">
+                                <form action="{{ route('gioHang.update', $item->id) }}" method="POST" class="d-flex align-items-center">
                                  @csrf
                                     @method('PATCH')
-                                    <input type="number" name="so_luong" value="{{ $item->pivot->so_luong }}" min="1" class="form-control w-25 d-inline" style="max-width: 80px;" data-gia="{{ $item->gia }}" onchange="updateTotal(this, {{ $item->ma_san_pham }}, {{ $item->gia }})">
+                                    <input type="number" name="so_luong" value="{{ $item->pivot->so_luong }}" min="1" class="form-control w-25 d-inline" style="max-width: 80px;" data-gia="{{ $item->gia }}" onchange="updateTotal(this, {{ $item->id }}, {{ $item->gia }})">
                                     <button type="submit" class="btn btn-sm btn-success ms-2">
                                         <i class="bi bi-arrow-repeat"></i> Cập nhật
                                     </button>
                                 </form>
                             </td>
-                            <td id="total-{{ $item->ma_san_pham }}">{{ number_format($item->gia * $item->pivot->so_luong, 0, ',', '.') }} VNĐ</td>
+                            <td id="total-{{ $item->id }}">{{ number_format($item->gia * $item->pivot->so_luong, 0, ',', '.') }} VNĐ</td>
                             <td>
-                                <form action="{{ route('gioHang.remove', $item->ma_san_pham) }}" method="POST">
+                                <form action="{{ route('gioHang.remove', $item->id) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?')">
@@ -78,11 +78,11 @@
         @endif
     </div>
 
-    <script>
+<script>
     // Truyền dữ liệu giá của các sản phẩm vào JavaScript
     const prices = {
         @foreach ($cartItems as $item)
-            '{{ $item->ma_san_pham }}': {{ $item->gia }},
+            '{{ $item->id }}': {{ $item->gia }}, 
         @endforeach
     };
 
@@ -96,7 +96,7 @@
         let tongGia = 0;
         document.querySelectorAll('input[name="so_luong"]').forEach(input => {
             const soLuongItem = parseInt(input.value) || 0;
-            const maSanPhamItem = input.closest('form').action.split('/').pop();
+            const maSanPhamItem = input.closest('form').action.split('/').pop(); // Lấy id từ URL
             const giaItem = prices[maSanPhamItem] || 0;
             tongSoLuong += soLuongItem;
             tongGia += giaItem * soLuongItem;
@@ -108,7 +108,7 @@
 
     // Thêm data-gia vào các input dựa trên prices
     document.querySelectorAll('input[name="so_luong"]').forEach(input => {
-        const maSanPham = input.closest('form').action.split('/').pop();
+        const maSanPham = input.closest('form').action.split('/').pop(); // Lấy id từ URL
         const gia = prices[maSanPham] || 0;
         input.setAttribute('data-gia', gia);
     });

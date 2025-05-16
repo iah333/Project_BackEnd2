@@ -16,10 +16,8 @@ Route::get('/danh-muc/{slug}', [App\Http\Controllers\DanhMucSanPhamController::c
 
 //
 
-Route::get('/san-pham/{ma_san_pham}', [SanPhamController::class, 'show'])->name('san-pham.show');
+Route::get('/san-pham/{id}', [SanPhamController::class, 'show'])->name('san-pham.show');
 
-//
-Route::post('/gio-hang/them/{ma_san_pham}', [App\Http\Controllers\GioHangController::class, 'them'])->name('gio-hang.them')->middleware('auth');
 
 //Middleware Auth
 // Admin routes
@@ -50,6 +48,7 @@ Route::post('register', [LoginController::class, 'register'])->name('register');
 
 //Logout
 Route::get('signout', [LoginController::class, 'signOut'])->name('signout');
+Route::post('logout', [LoginController::class, 'signOut'])->name('logout'); // Thêm route POST mới
 
 //Detail User
 Route::get('detailsUser', [LoginController::class, 'detailsUser'])->name('detailsUser');
@@ -65,6 +64,6 @@ Route::post('admin/update', [LoginController::class, 'updateAdmin'])->name('upda
 
 //Cart
 Route::get('/gio-hang', [GioHangController::class, 'showCart'])->name('gioHang.show');
-Route::post('/gio-hang/them/{ma_san_pham}', [GioHangController::class, 'them'])->name('gioHang.them');
-Route::patch('/gio-hang/cap-nhat/{ma_san_pham}', [GioHangController::class, 'update'])->name('gioHang.update');
-Route::delete('/gio-hang/xoa/{ma_san_pham}', [GioHangController::class, 'remove'])->name('gioHang.remove');
+Route::post('/gio-hang/them/{id}', [GioHangController::class, 'them'])->name('gioHang.them');
+Route::patch('/gio-hang/cap-nhat/{id}', [GioHangController::class, 'update'])->name('gioHang.update');
+Route::delete('/gio-hang/xoa/{id}', [GioHangController::class, 'remove'])->name('gioHang.remove');

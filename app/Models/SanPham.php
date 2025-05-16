@@ -17,4 +17,10 @@ class SanPham extends Model
     {
         return $this->belongsTo(DanhMucSanPham::class, 'danhmuc_id', 'id');
     }
+    public function gioHangs()
+    {
+        return $this->belongsToMany(GioHang::class, 'giohang_sanpham', 'sanpham_id', 'giohang_id')
+            ->withPivot('so_luong_ton')
+            ->withTimestamps();
+    }
 }

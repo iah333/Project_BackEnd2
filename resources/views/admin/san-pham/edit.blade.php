@@ -6,7 +6,7 @@
           <h5>Sửa sản phẩm</h5>
       </div>
       <div class="card-body">
-          <form action="{{ route('sanPham.update', $sanPham->ma_san_pham) }}" method="POST" enctype="multipart/form-data">
+          <form action="{{ route('sanPham.update', $sanPham->id) }}" method="POST" enctype="multipart/form-data">
               @csrf
               @method('PUT')
               <div class="mb-3">

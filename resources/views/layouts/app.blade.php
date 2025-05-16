@@ -4,53 +4,85 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" /> <!-- Thêm Font Awesome -->
     <title>@yield('title', 'PhoneStore')</title>
-    <style>
-        .navbar-custom {
-            background-color: #515154;
-        }
-        .navbar-custom .nav-link {
-            color: rgba(255, 255, 255, 0.6);
-            transition: color 0.3s ease;
-        }
-        .navbar-custom .nav-link:hover {
-            color: rgba(255, 255, 255, 1);
-        }
-        .navbar-brand img {
-            height: 40px;
-        }
-        .carousel-item img {
-            height: 400px;
-            object-fit: cover;
-        }
-    </style>
+<style>
+    .navbar-custom {
+        background-color: #515154;
+    }
+    .navbar-custom .nav-link {
+        color: rgba(255, 255, 255, 0.6);
+        transition: color 0.3s ease;
+    }
+    .navbar-custom .nav-link:hover {
+        color: rgba(255, 255, 255, 1);
+    }
+    .navbar-brand img {
+        height: 40px;
+    }
+    .carousel-item img {
+        height: 400px;
+        object-fit: cover;
+    }
+    /* Style cho dropdown user */
+    .dropdown-menu {
+        background-color: #515154;
+    }
+    .dropdown-item {
+        color: rgba(255, 255, 255, 0.6);
+    }
+    .dropdown-item:hover {
+        color: rgba(255, 255, 255, 1);
+        background-color: #3c3c3f;
+    }
+</style>
 </head>
 <body>
-    <nav class="navbar navbar-expand-lg navbar-custom">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">
-                <img src="{{ asset('images/logo.png') }}" alt="Logo PhoneStore">
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-                <ul class="navbar-nav">
-                    @if (isset($danhMucs) && is_countable($danhMucs))
-                        @foreach ($danhMucs as $danhMuc)
-                            <li class="nav-item">
-                                <a class="nav-link" href="{{ route('danh-muc.slug', $danhMuc->ten_danh_muc) }}">{{ $danhMuc->ten_danh_muc }}</a>
-                            </li>
-                        @endforeach
-                    @else
+<nav class="navbar navbar-expand-lg navbar-custom">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="/">
+            <img src="{{ asset('images/logo.png') }}" alt="Logo PhoneStore">
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
+            <ul class="navbar-nav">
+                @if (isset($danhMucs) && is_countable($danhMucs))
+                    @foreach ($danhMucs as $danhMuc)
                         <li class="nav-item">
-                            <span class="nav-link">Không có danh mục</span>
+                            <a class="nav-link" href="{{ route('danh-muc.slug', $danhMuc->ten_danh_muc) }}">{{ $danhMuc->ten_danh_muc }}</a>
                         </li>
-                    @endif
+                    @endforeach
+                @else
+                    <li class="nav-item">
+                        <span class="nav-link">Không có danh mục</span>
+                    </li>
+                @endif
+            </ul>
+            <!-- Dịch icon sang trái bằng cách thêm margin phải -->
+            <div class="dropdown ms-5 me-1"> <!-- Bỏ ms-auto, thêm me-3 -->
+                <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-user" style="font-size: 24px; color: rgba(255, 255, 255, 0.6);"></i>
+                </a>
+                <ul class="dropdown-menu">
+                    @guest
+                        <li><a class="dropdown-item" href="{{ route('login') }}">Đăng nhập</a></li>
+                        <li><a class="dropdown-item" href="{{ route('register') }}">Đăng ký</a></li>
+                    @endguest
+                    @auth
+                        <li><a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Đăng xuất</a></li>
+                        <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            @csrf
+                        </form>
+                        <li><a class="dropdown-item" href="">Hồ sơ</a></li>
+                        <li><a class="dropdown-item" href="{{ route('gioHang.show') }}">Giỏ Hàng</a></li>
+                    @endauth
                 </ul>
             </div>
         </div>
-    </nav>
+    </div>
+</nav>
 
     @yield('content')
 
