@@ -45,7 +45,7 @@
                             <td>{{ number_format($item->gia, 0, ',', '.') }} VNĐ</td>
                             <td>
                                 <form action="{{ route('gioHang.update', $item->id) }}" method="POST" class="d-flex align-items-center">
-                                 @csrf
+                                    @csrf
                                     @method('PATCH')
                                     <input type="number" name="so_luong" value="{{ $item->pivot->so_luong }}" min="1" class="form-control w-25 d-inline" style="max-width: 80px;" data-gia="{{ $item->gia }}" onchange="updateTotal(this, {{ $item->id }}, {{ $item->gia }})">
                                     <button type="submit" class="btn btn-sm btn-success ms-2">
@@ -73,44 +73,98 @@
                 <p><strong>Tổng số lượng:</strong> <span id="tongSoLuong">{{ $tongSoLuong }}</span></p>
                 <p><strong>Tổng giá:</strong> <span id="tongGia">{{ number_format($tongGia, 0, ',', '.') }} VNĐ</span></p>
                 <a href="{{ route('sanPham.index') }}" class="btn btn-secondary">Tiếp tục mua sắm</a>
-                <a href="#" class="btn btn-primary float-end">Đặt Hàng</a>
+                <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#datHangModal">Đặt Hàng</button>
+            </div>
+
+            <!-- Modal Đặt Hàng -->
+            <div class="modal fade" id="datHangModal" tabindex="-1" aria-labelledby="datHangModalLabel" aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="datHangModalLabel">Xác Nhận Đặt Hàng</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <form action="{{ route('don-hang.store') }}" method="POST">
+                                @csrf
+                                <div class="mb-3">
+                                    <label class="form-label"><strong>Mã Đơn Hàng (Tạm thời):</strong></label>
+                                    <p>{{ 'DH-' . date('YmdHis') }}</p>
+                                    <input type="hidden" name="ma_don_hang" value="{{ 'DH-' . date('YmdHis') }}">
+                                </div>
+                                <div class="mb-3">
+                                    <label for="dia_chi_id" class="form-label">Chọn Địa Chỉ Nhận Hàng</label>
+                                    <select name="dia_chi_id" id="dia_chi_id" class="form-control" required>
+                                        <option value="">Chọn địa chỉ</option>
+                                        @foreach ($diaChis as $diaChi)
+                                            <option value="{{ $diaChi->id }}">
+                                                {{ $diaChi->dia_chi_chi_tiet }}, {{ $diaChi->phuongXa->ten_phuong_xa }},
+                                                {{ $diaChi->quanHuyen->ten_quan_huyen }}, {{ $diaChi->thanhPho->ten_thanh_pho }}
+                                            </option>
+                                        @endforeach
+                                    </select>
+                                    @error('dia_chi_id')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="mb-3">
+                                    <label for="ten_nguoi_nhan" class="form-label">Tên Người Nhận</label>
+                                    <input type="text" name="ten_nguoi_nhan" id="ten_nguoi_nhan" class="form-control" value="{{ old('ten_nguoi_nhan', Auth::user()->name) }}" required>
+                                    @error('ten_nguoi_nhan')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="mb-3">
+                                    <label for="so_dien_thoai" class="form-label">Số Điện Thoại</label>
+                                    <input type="text" name="so_dien_thoai" id="so_dien_thoai" class="form-control" value="{{ old('so_dien_thoai') }}" required>
+                                    @error('so_dien_thoai')
+                                        <div class="text-danger">{{ $message }}</div>
+                                    @enderror
+                                </div>
+                                <div class="mb-3">
+                                    <label class="form-label"><strong>Tổng Tiền:</strong></label>
+                                    <p>{{ number_format($tongGia, 0, ',', '.') }} VNĐ</p>
+                                </div>
+                                <button type="submit" class="btn btn-success">Xác Nhận Đặt Hàng</button>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
             </div>
         @endif
     </div>
 
-<script>
-    // Truyền dữ liệu giá của các sản phẩm vào JavaScript
-    const prices = {
-        @foreach ($cartItems as $item)
-            '{{ $item->id }}': {{ $item->gia }}, 
-        @endforeach
-    };
+    <script>
+        const prices = {
+            @foreach ($cartItems as $item)
+                '{{ $item->id }}': {{ $item->gia }},
+            @endforeach
+        };
 
-    function updateTotal(input, maSanPham, gia) {
-        const soLuong = parseInt(input.value) || 0;
-        const tong = gia * soLuong;
-        document.getElementById('total-' + maSanPham).textContent = new Intl.NumberFormat('vi-VN').format(tong) + ' VNĐ';
+        function updateTotal(input, maSanPham, gia) {
+            const soLuong = parseInt(input.value) || 0;
+            const tong = gia * soLuong;
+            document.getElementById('total-' + maSanPham).textContent = new Intl.NumberFormat('vi-VN').format(tong) + ' VNĐ';
 
-        // Tính lại tổng số lượng và tổng giá
-        let tongSoLuong = 0;
-        let tongGia = 0;
+            let tongSoLuong = 0;
+            let tongGia = 0;
+            document.querySelectorAll('input[name="so_luong"]').forEach(input => {
+                const soLuongItem = parseInt(input.value) || 0;
+                const maSanPhamItem = input.closest('form').action.split('/').pop();
+                const giaItem = prices[maSanPhamItem] || 0;
+                tongSoLuong += soLuongItem;
+                tongGia += giaItem * soLuongItem;
+            });
+
+            document.getElementById('tongSoLuong').textContent = tongSoLuong;
+            document.getElementById('tongGia').textContent = new Intl.NumberFormat('vi-VN').format(tongGia) + ' VNĐ';
+        }
+
         document.querySelectorAll('input[name="so_luong"]').forEach(input => {
-            const soLuongItem = parseInt(input.value) || 0;
-            const maSanPhamItem = input.closest('form').action.split('/').pop(); // Lấy id từ URL
-            const giaItem = prices[maSanPhamItem] || 0;
-            tongSoLuong += soLuongItem;
-            tongGia += giaItem * soLuongItem;
+            const maSanPham = input.closest('form').action.split('/').pop();
+            const gia = prices[maSanPham] || 0;
+            input.setAttribute('data-gia', gia);
         });
-
-        document.getElementById('tongSoLuong').textContent = tongSoLuong;
-        document.getElementById('tongGia').textContent = new Intl.NumberFormat('vi-VN').format(tongGia) + ' VNĐ';
-    }
-
-    // Thêm data-gia vào các input dựa trên prices
-    document.querySelectorAll('input[name="so_luong"]').forEach(input => {
-        const maSanPham = input.closest('form').action.split('/').pop(); // Lấy id từ URL
-        const gia = prices[maSanPham] || 0;
-        input.setAttribute('data-gia', gia);
-    });
-</script>
+    </script>
 @endsection

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\GioHang;
 use App\Models\GioHangSanPham;
 use App\Models\SanPham;
+use App\Models\DiaChi;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -165,6 +166,8 @@ public function showCart()
         return $item->gia * $item->pivot->so_luong;
     });
 
+    $diaChis = DiaChi::where('user_id', Auth::id())->get(); 
+    \Log::info('DiaChis: ' . $diaChis->count());
     return view('gio-hang.index', compact('cartItems', 'tongSoLuong', 'tongGia'));
 }
 }

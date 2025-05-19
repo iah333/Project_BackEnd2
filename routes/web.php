@@ -5,6 +5,9 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\SanPhamController;
 use App\Http\Controllers\DanhMucSanPhamController;
 use App\Http\Controllers\GioHangController;
+use App\Http\Controllers\DiaChiController;
+use App\Http\Controllers\DonHangController;
+
 
 
 //Trang chủ
@@ -67,3 +70,16 @@ Route::get('/gio-hang', [GioHangController::class, 'showCart'])->name('gioHang.s
 Route::post('/gio-hang/them/{id}', [GioHangController::class, 'them'])->name('gioHang.them');
 Route::patch('/gio-hang/cap-nhat/{id}', [GioHangController::class, 'update'])->name('gioHang.update');
 Route::delete('/gio-hang/xoa/{id}', [GioHangController::class, 'remove'])->name('gioHang.remove');
+
+//Địa Chỉ 
+Route::middleware(['auth'])->group(function () {
+    Route::resource('dia-chi', DiaChiController::class);
+    Route::get('/dia-chi/get-quan-huyen/{thanhPhoId}', [DiaChiController::class, 'getQuanHuyen']);
+    Route::get('/dia-chi/get-phuong-xa/{quanHuyenId}', [DiaChiController::class, 'getPhuongXa']);
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/don-hang/create', [DonHangController::class, 'create'])->name('don-hang.create');
+    Route::post('/don-hang', [DonHangController::class, 'store'])->name('don-hang.store');
+    Route::get('/don-hang/{id}', [DonHangController::class, 'show'])->name('don-hang.show');
+});

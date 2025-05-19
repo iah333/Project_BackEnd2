@@ -11,6 +11,8 @@ return new class extends Migration
         Schema::create('donhang', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
+            $table->string('ten_nguoi_nhan')->nullable();
+            $table->string('so_dien_thoai')->nullable();
             $table->dateTime('ngay_dat');
             $table->decimal('tong_tien', 10, 2);
             $table->string('trang_thai')->default('chờ xử lý');
@@ -24,4 +26,5 @@ return new class extends Migration
     {
         Schema::dropIfExists('donhang');
     }
+
 };

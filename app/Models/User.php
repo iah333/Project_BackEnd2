@@ -48,6 +48,10 @@ class User extends Authenticatable
     }
     public function gioHangs()
     {
-        return $this->hasMany(GioHang::class, 'id', 'id'); // Thay 'id' bằng tên cột thực tế
+        return $this->hasMany(GioHang::class, 'id', 'id'); 
+    }
+    public function diaChis()
+    {
+        return $this->hasMany(DiaChi::class, 'user_id');
     }
 }
