@@ -20,6 +20,6 @@ class GioHang extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id'); // Thay 'id' bằng tên cột thực tế
+        return $this->belongsTo(User::class, 'user_id', 'id'); 
     }
 }

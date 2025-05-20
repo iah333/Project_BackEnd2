@@ -6,65 +6,53 @@ use App\Models\DonHang;
 use App\Models\ChiTietDonHang;
 use App\Models\GioHang;
 use App\Models\DiaChi;
-use App\Models\SanPham;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
-
 class DonHangController extends Controller
 {
-    public function create()
-    {
-        $gioHangs = GioHang::where('user_id', Auth::id())->with('sanPham')->get();
-        $diaChis = DiaChi::where('user_id', Auth::id())->get();
-        $tongTien = $gioHangs->sum(function ($gioHang) {
-            return $gioHang->so_luong * $gioHang->sanPham->gia;
-        });
-
-        return view('don-hang.create', compact('gioHangs', 'diaChis', 'tongTien'));
-    }
-
     public function store(Request $request)
     {
         $request->validate([
             'dia_chi_id' => 'required|exists:diachi,id',
+            'ten_nguoi_nhan' => 'required|string|max:255',
+            'so_dien_thoai' => 'required|regex:/^0[0-9]{9}$/',
         ]);
 
-        $gioHangs = GioHang::where('user_id', Auth::id())->with('sanPham')->get();
-        if ($gioHangs->isEmpty()) {
+        $gioHang = GioHang::where('user_id', Auth::id())->firstOrFail();
+        $cartItems = $gioHang->sanPhams()->get();
+
+        if ($cartItems->isEmpty()) {
             return redirect()->back()->with('error', 'Giỏ hàng của bạn đang trống!');
         }
 
-        $tongTien = $gioHangs->sum(function ($gioHang) {
-            return $gioHang->so_luong * $gioHang->sanPham->gia;
+        $tongTien = $cartItems->sum(function ($item) {
+            return $item->gia * $item->pivot->so_luong;
         });
 
         // Tạo đơn hàng
         $donHang = DonHang::create([
             'user_id' => Auth::id(),
             'dia_chi_id' => $request->dia_chi_id,
+            'ten_nguoi_nhan' => $request->ten_nguoi_nhan,
+            'so_dien_thoai' => $request->so_dien_thoai,
             'ngay_dat' => now(),
             'tong_tien' => $tongTien,
             'trang_thai' => 'chờ xử lý',
         ]);
 
         // Lưu chi tiết đơn hàng
-        foreach ($gioHangs as $gioHang) {
+        foreach ($cartItems as $item) {
             ChiTietDonHang::create([
                 'don_hang_id' => $donHang->id,
-                'san_pham_id' => $gioHang->san_pham_id,
-                'so_luong' => $gioHang->so_luong,
-                'gia' => $gioHang->sanPham->gia,
+                'san_pham_id' => $item->id,
+                'so_luong' => $item->pivot->so_luong,
+                'gia' => $item->gia,
             ]);
-
-            // Cập nhật số lượng tồn kho
-            $sanPham = $gioHang->sanPham;
-            $sanPham->so_luong_ton -= $gioHang->so_luong;
-            $sanPham->save();
         }
 
         // Xóa giỏ hàng sau khi đặt hàng
-        GioHang::where('user_id', Auth::id())->delete();
+        $gioHang->sanPhams()->detach();
 
         return redirect()->route('don-hang.show', $donHang->id)->with('success', 'Đặt hàng thành công!');
     }

@@ -19,8 +19,8 @@
         <div class="card">
             <div class="card-body">
                 <h5>Mã Đơn Hàng: {{ $donHang->id }}</h5>
-                <p><strong>Người Nhận:</strong> {{ $donHang->user->name }}</p>
-                <p><strong>Số Điện Thoại:</strong> {{ $donHang->diaChi->so_dien_thoai }}</p>
+                <p><strong>Người Nhận:</strong> {{ $donHang->ten_nguoi_nhan }}</p>
+                <p><strong>Số Điện Thoại:</strong> {{ $donHang->so_dien_thoai }}</p>
                 <p><strong>Địa Chỉ Nhận Hàng:</strong> {{ $donHang->diaChi->dia_chi_chi_tiet }},
                     {{ $donHang->diaChi->phuongXa->ten_phuong_xa }},
                     {{ $donHang->diaChi->quanHuyen->ten_quan_huyen }},
@@ -52,7 +52,7 @@
                 </table>
             </div>
         </div>
-        <a href="{{ route('don-hang.create') }}" class="btn btn-primary mt-3">Đặt Hàng Khác</a>
+        <a href="{{ route('gio-hang.index') }}" class="btn btn-primary mt-3">Quay Lại Giỏ Hàng</a>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>

@@ -76,7 +76,7 @@
                             @csrf
                         </form>
                         <li><a class="dropdown-item" href="">Hồ sơ</a></li>
-                        <li><a class="dropdown-item" href="{{ route('gioHang.show') }}">Giỏ Hàng</a></li>
+                        <li><a class="dropdown-item" href="{{ route('gioHang.index') }}">Giỏ Hàng</a></li>
                     @endauth
                 </ul>
             </div>

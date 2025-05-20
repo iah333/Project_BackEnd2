@@ -66,7 +66,7 @@ Route::post('admin/update', [LoginController::class, 'updateAdmin'])->name('upda
 
 
 //Cart
-Route::get('/gio-hang', [GioHangController::class, 'showCart'])->name('gioHang.show');
+Route::get('/gio-hang', [GioHangController::class, 'index'])->name('gioHang.index');
 Route::post('/gio-hang/them/{id}', [GioHangController::class, 'them'])->name('gioHang.them');
 Route::patch('/gio-hang/cap-nhat/{id}', [GioHangController::class, 'update'])->name('gioHang.update');
 Route::delete('/gio-hang/xoa/{id}', [GioHangController::class, 'remove'])->name('gioHang.remove');
@@ -79,7 +79,6 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/don-hang/create', [DonHangController::class, 'create'])->name('don-hang.create');
     Route::post('/don-hang', [DonHangController::class, 'store'])->name('don-hang.store');
     Route::get('/don-hang/{id}', [DonHangController::class, 'show'])->name('don-hang.show');
 });

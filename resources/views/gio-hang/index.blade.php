@@ -75,67 +75,79 @@
                 <a href="{{ route('sanPham.index') }}" class="btn btn-secondary">Tiếp tục mua sắm</a>
                 <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#datHangModal">Đặt Hàng</button>
             </div>
+        @endif
 
-            <!-- Modal Đặt Hàng -->
-            <div class="modal fade" id="datHangModal" tabindex="-1" aria-labelledby="datHangModalLabel" aria-hidden="true">
-                <div class="modal-dialog">
-                    <div class="modal-content">
-                        <div class="modal-header">
-                            <h5 class="modal-title" id="datHangModalLabel">Xác Nhận Đặt Hàng</h5>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                        </div>
-                        <div class="modal-body">
-                            <form action="{{ route('don-hang.store') }}" method="POST">
-                                @csrf
-                                <div class="mb-3">
-                                    <label class="form-label"><strong>Mã Đơn Hàng (Tạm thời):</strong></label>
-                                    <p>{{ 'DH-' . date('YmdHis') }}</p>
-                                    <input type="hidden" name="ma_don_hang" value="{{ 'DH-' . date('YmdHis') }}">
+        <!-- Modal Đặt Hàng -->
+        <div class="modal fade" id="datHangModal" tabindex="-1" aria-labelledby="datHangModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="datHangModalLabel">Xác Nhận Đặt Hàng</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="{{ route('don-hang.store') }}" method="POST" id="datHangForm">
+                            @csrf
+                            <!-- Card 1: Thông tin người nhận -->
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">Thông tin người nhận</h5>
+                                    <div class="mb-3">
+                                        <label for="ten_nguoi_nhan" class="form-label">Tên người nhận</label>
+                                        <input type="text" name="ten_nguoi_nhan" id="ten_nguoi_nhan" class="form-control" value="{{ old('ten_nguoi_nhan', Auth::user()->name) }}" required>
+                                        @error('ten_nguoi_nhan')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
+                                    <div class="mb-3">
+                                        <label for="so_dien_thoai" class="form-label">Số điện thoại</label>
+                                        <input type="text" name="so_dien_thoai" id="so_dien_thoai" class="form-control" value="{{ old('so_dien_thoai') }}" required>
+                                        @error('so_dien_thoai')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="dia_chi_id" class="form-label">Chọn Địa Chỉ Nhận Hàng</label>
-                                    <select name="dia_chi_id" id="dia_chi_id" class="form-control" required>
-                                        <option value="">Chọn địa chỉ</option>
-                                        @foreach ($diaChis as $diaChi)
-                                            <option value="{{ $diaChi->id }}">
-                                                {{ $diaChi->dia_chi_chi_tiet }}, {{ $diaChi->phuongXa->ten_phuong_xa }},
-                                                {{ $diaChi->quanHuyen->ten_quan_huyen }}, {{ $diaChi->thanhPho->ten_thanh_pho }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @error('dia_chi_id')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
+                            </div>
+
+                            <!-- Card 2: Địa chỉ nhận hàng -->
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">Địa chỉ nhận hàng</h5>
+                                    <div class="mb-3">
+                                        <label for="dia_chi_id" class="form-label">Chọn địa chỉ</label>
+                                        <select name="dia_chi_id" id="dia_chi_id" class="form-control" required>
+                                            <option value="">Chọn địa chỉ</option>
+                                            @foreach ($diaChis as $diaChi)
+                                                <option value="{{ $diaChi->id }}">
+                                                    {{ $diaChi->dia_chi_chi_tiet }}, {{ $diaChi->phuongXa->ten_phuong_xa ?? 'N/A' }},
+                                                    {{ $diaChi->quanHuyen->ten_quan_huyen ?? 'N/A' }}, {{ $diaChi->thanhPho->ten_thanh_pho ?? 'N/A' }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @error('dia_chi_id')
+                                            <div class="text-danger">{{ $message }}</div>
+                                        @enderror
+                                    </div>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="ten_nguoi_nhan" class="form-label">Tên Người Nhận</label>
-                                    <input type="text" name="ten_nguoi_nhan" id="ten_nguoi_nhan" class="form-control" value="{{ old('ten_nguoi_nhan', Auth::user()->name) }}" required>
-                                    @error('ten_nguoi_nhan')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
+                            </div>
+
+                            <!-- Card 3: Tổng thanh toán -->
+                            <div class="card mb-3">
+                                <div class="card-body">
+                                    <h5 class="card-title">Tổng thanh toán</h5>
+                                    <p><strong>Tổng tiền:</strong> <span>{{ number_format($tongGia, 0, ',', '.') }} VNĐ</span></p>
+                                    <button type="submit" class="btn btn-success w-100">Tiến hành đặt hàng</button>
                                 </div>
-                                <div class="mb-3">
-                                    <label for="so_dien_thoai" class="form-label">Số Điện Thoại</label>
-                                    <input type="text" name="so_dien_thoai" id="so_dien_thoai" class="form-control" value="{{ old('so_dien_thoai') }}" required>
-                                    @error('so_dien_thoai')
-                                        <div class="text-danger">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="mb-3">
-                                    <label class="form-label"><strong>Tổng Tiền:</strong></label>
-                                    <p>{{ number_format($tongGia, 0, ',', '.') }} VNĐ</p>
-                                </div>
-                                <button type="submit" class="btn btn-success">Xác Nhận Đặt Hàng</button>
-                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Hủy</button>
-                            </form>
-                        </div>
+                            </div>
+                        </form>
                     </div>
                 </div>
             </div>
-        @endif
+        </div>
     </div>
 
     <script>
+        // Cập nhật tổng tiền khi thay đổi số lượng
         const prices = {
             @foreach ($cartItems as $item)
                 '{{ $item->id }}': {{ $item->gia }},
