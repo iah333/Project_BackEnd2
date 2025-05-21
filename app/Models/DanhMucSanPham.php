@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class DanhMucSanPham extends Model
 {
-    protected $table = 'danh_muc';
-    protected $primaryKey = 'ma_danh_muc';
+    protected $table = 'danhmuc';
+    protected $primaryKey = 'id';
     public $timestamps = true;
 
     protected $fillable = ['ten_danh_muc'];
@@ -15,6 +15,6 @@ class DanhMucSanPham extends Model
     // Mối quan hệ: Một danh mục có nhiều sản phẩm
     public function sanPhams()
     {
-        return $this->hasMany(SanPham::class, 'ma_danh_muc', 'ma_danh_muc');
+        return $this->hasMany(SanPham::class, 'danhmuc_id', 'id');
     }
 }

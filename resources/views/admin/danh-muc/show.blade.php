@@ -22,7 +22,7 @@
                                 <h5 class="card-title">{{ $sanPham->ten_san_pham }}</h5>
                                 <p class="card-text"><strong>Giá:</strong> {{ number_format($sanPham->gia, 0, ',', '.') }} VNĐ</p>
                                 <p class="card-text"><strong>Số lượng tồn:</strong> {{ $sanPham->so_luong_ton }}</p>
-                                <a href="{{ route('sanPham.show', $sanPham->ma_san_pham) }}" class="btn btn-primary">Xem chi tiết</a>                            </div>
+                                <a href="{{ route('san-pham.show', $sanPham->id) }}" class="btn btn-primary">Xem chi tiết</a>                            </div>
                         </div>
                     </div>
                 @endforeach

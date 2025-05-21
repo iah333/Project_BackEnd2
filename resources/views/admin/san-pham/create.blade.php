@@ -30,17 +30,25 @@
                 <input type="number" name="so_luong_ton" class="form-control" value="{{ old('so_luong_ton') }}" required>
             </div>
             <div class="mb-3">
-                <label for="ma_danh_muc" class="form-label">Danh mục</label>
-                <select name="ma_danh_muc" class="form-control" required>
+                <label for="danhmuc_id" class="form-label">Danh mục</label>
+                <select name="danhmuc_id" class="form-control" required>
                     <option value="">Chọn danh mục</option>
                     @foreach ($danhMucs as $danhMuc)
-                        <option value="{{ $danhMuc->ma_danh_muc }}" {{ old('ma_danh_muc') == $danhMuc->ma_danh_muc ? 'selected' : '' }}>{{ $danhMuc->ten_danh_muc }}</option>
+                        <option value="{{ $danhMuc->id }}" {{ old('danhmuc_id') == $danhMuc->id ? 'selected' : '' }}>
+                            {{ $danhMuc->ten_danh_muc }}
+                        </option>
                     @endforeach
                 </select>
+                @error('danhmuc_id')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
             </div>
             <div class="mb-3">
                 <label for="anh" class="form-label">Ảnh sản phẩm</label>
                 <input type="file" name="anh" class="form-control" accept="image/*">
+                @error('anh')
+                    <div class="text-danger">{{ $message }}</div>
+                @enderror
             </div>
             <button type="submit" class="btn btn-primary">Thêm sản phẩm</button>
         </form>

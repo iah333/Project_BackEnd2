@@ -27,6 +27,12 @@ class DatabaseSeeder extends Seeder
         $user->avatar = null;
         $user->save();
 
+        $this->call([
+        ThanhPhoSeeder::class,
+        QuanHuyenSeeder::class,
+        PhuongXaSeeder::class,
+    ]);
+
         // $user = new User;
         // $user->name ='User';
         // $user->email = 'user@gmail.com';

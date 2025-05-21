@@ -33,7 +33,7 @@
                 @if ($danhMuc->sanPhams->isNotEmpty())
                     @foreach ($danhMuc->sanPhams->random(min(4, $danhMuc->sanPhams->count())) as $sanPham)
                         <div class="col-md-3 mb-4">
-                            <a href="{{ route('san-pham.show', $sanPham->ma_san_pham) }}" class="text-decoration-none">
+                            <a href="{{ route('san-pham.show', $sanPham->id) }}" class="text-decoration-none">
                                 <div class="card h-100">
                                     <img src="{{ asset($sanPham->anh) }}" class="card-img-top" alt="{{ $sanPham->ten_san_pham }}">
                                     <div class="card-body">

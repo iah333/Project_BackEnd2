@@ -46,4 +46,12 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function gioHangs()
+    {
+        return $this->hasMany(GioHang::class, 'id', 'id'); 
+    }
+    public function diaChis()
+    {
+        return $this->hasMany(DiaChi::class, 'user_id');
+    }
 }
