@@ -46,4 +46,8 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function diachis()
+    {
+        return $this->hasMany(Diachi::class);
+    }
 }

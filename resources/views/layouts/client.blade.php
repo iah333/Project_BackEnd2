@@ -19,19 +19,20 @@
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav">
                     @guest
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ 'login' }}">Login</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ 'register' }}">Create user</a>
-                    </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ 'login' }}">Login</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" href="{{ 'register' }}">Create user</a>
+                        </li>
                     @else
-                    <form method="get" action="{{ route('signout') }}">
-                        @csrf
-                        <button type="submit" class="btn btn-link nav-link" style="display: inline; padding: 0; border: none; background: none;">
-                            Logout
-                        </button>
-                    </form>
+                        <form method="get" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="btn btn-link nav-link"
+                                style="display: inline; padding: 0; border: none; background: none;">
+                                Logout
+                            </button>
+                        </form>
                     @endguest
                 </ul>
             </div>

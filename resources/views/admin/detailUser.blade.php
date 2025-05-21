@@ -39,7 +39,7 @@
 
     <div class="container">
         <div class="profile-card text-center">
-            <img src="{{ asset('avatar/' . (auth()->user()->avatar ?? 'default.jpg')) }}"  class="profile-avatar"
+            <img src="{{ asset('avatar/' . (auth()->user()->avatar ?? 'default.jpg')) }}" class="profile-avatar"
                 alt="Avatar">
             <div class="profile-title">Thông tin cá nhân</div>
 

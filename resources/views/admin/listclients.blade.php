@@ -10,6 +10,12 @@
             </div>
         @endif
 
+        @if (Session::has('error'))
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle"></i> {{ Session::get('error') }}
+            </div>
+        @endif
+
         <div class="card">
             <div class="card-body p-0">
                 <table class="table mb-0">
@@ -40,9 +46,12 @@
                                         alt="avatar">
                                 </td>
                                 <td>
-                                    <a href="" {{ $user->id }} class="btn btn-info btn-sm">Xem</a>
-                                    <a href="" {{ $user->id }} class="btn btn-warning btn-sm">Sửa</a>
-                                    <form action="" {{ $user->id }} method="POST" class="d-inline">
+                                    <a href="#" class="btn btn-info btn-sm">Xem</a>
+                                    <a href="#" class="btn btn-warning btn-sm">Sửa</a>
+
+                                    <form action="{{ route('users.DeleteUsers', $user->id) }}" method="POST"
+                                        class="d-inline"
+                                        onsubmit="return confirmDelete({{ $user->is_admin ? 'true' : 'false' }})">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="btn btn-danger btn-sm">Xóa</button>
@@ -59,4 +68,14 @@
             {{ $users->links() }}
         </div>
     </div>
+
+    <script>
+        function confirmDelete(isAdmin) {
+            if (isAdmin) {
+                alert('Không thể xóa người dùng có quyền admin!');
+                return false;
+            }
+            return confirm('Bạn có chắc chắn muốn xóa người dùng này không?');
+        }
+    </script>
 @endsection
