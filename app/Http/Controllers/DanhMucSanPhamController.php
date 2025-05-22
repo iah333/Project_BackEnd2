@@ -60,8 +60,8 @@ class DanhMucSanPhamController extends Controller
     }
     public function showBySlug($slug)
     {
-    $danhMuc = DanhMucSanPham::where('ten_danh_muc', $slug)->with('sanPhams')->firstOrFail();
-    $danhMucs = DanhMucSanPham::all();
-    return view('admin.danh-muc.show', compact('danhMuc', 'danhMucs'));
+        $danhMuc = DanhMucSanPham::where('ten_danh_muc', $slug)->with('sanPhams')->firstOrFail();
+        $danhMucs = DanhMucSanPham::all();
+        return view('admin.danh-muc.show', compact('danhMuc', 'danhMucs'));
     }
 }

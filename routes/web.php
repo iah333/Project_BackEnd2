@@ -1,12 +1,14 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Auth\LoginController;
-use App\Http\Controllers\SanPhamController;
-use App\Http\Controllers\DanhMucSanPhamController;
-use App\Http\Controllers\GioHangController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\DiaChiController;
 use App\Http\Controllers\DonHangController;
+use App\Http\Controllers\GioHangController;
+use App\Http\Controllers\SanPhamController;
+use App\Http\Controllers\Auth\UserController;
+use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\DanhMucSanPhamController;
 
 
 
@@ -21,6 +23,12 @@ Route::get('/danh-muc/{slug}', [App\Http\Controllers\DanhMucSanPhamController::c
 
 Route::get('/san-pham/{id}', [SanPhamController::class, 'show'])->name('san-pham.show');
 
+// Đăng nhập / Đăng ký / Đăng xuất
+Route::get('login', [LoginController::class, 'showLogin'])->name('login.form');
+Route::post('login', [LoginController::class, 'login'])->name('login');
+Route::get('register', fn() => view('auth.register'))->name('register.form');
+Route::post('register', [LoginController::class, 'register'])->name('register');
+Route::get('logout', [LoginController::class, 'logout'])->name('logout');
 
 //Middleware Auth
 // Admin routes
@@ -28,7 +36,6 @@ Route::prefix('admin')->middleware(['auth', 'auth.login'])->group(function () {
     Route::get('/', function () {
         return view('admin.dashboard');
     })->name('admin');
-
     // Resource danh mục
     Route::resource('danh-muc', DanhMucSanPhamController::class)
         ->names('danhMuc')
@@ -36,34 +43,28 @@ Route::prefix('admin')->middleware(['auth', 'auth.login'])->group(function () {
 
     // Resource sản phẩm
     Route::resource('san-pham', SanPhamController::class)
-    ->names('sanPham')
-    ->parameters(['san-pham' => 'sanpham']);
+        ->names('sanPham')
+        ->parameters(['san-pham' => 'sanpham']);
 });
-Route::get('login', [LoginController::class, 'Showlogin'])->name('showlogin');
-Route::post('login', [LoginController::class, 'Login'])->name('login');
+// Admin routes (middleware bảo vệ)
+Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () {
+    Route::get('/', fn() => view('admin.dashboard'))->name('dashboard');
 
-//Đăng kí
-Route::get('register', function () {
-    return view('auth.register');
+    // Hiển thị danh sách người dùng
+    Route::get('/list', [UserController::class, 'index'])->name('users.index');
+
+    // Hiển thị chi tiết người dùng
+    Route::get('/{id}', [UserController::class, 'show'])->name('users.show');
+
+    // Sửa người dùng
+    Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
+
+    // Cập nhật người dùng
+    Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
+
+    // Xóa người dùng
+    Route::delete('/users/{id}', [UserController::class, 'delete'])->name('users.delete');
 });
-Route::post('register', [LoginController::class, 'register'])->name('register');
-
-
-//Logout
-Route::get('signout', [LoginController::class, 'signOut'])->name('signout');
-Route::post('logout', [LoginController::class, 'signOut'])->name('logout'); // Thêm route POST mới
-
-//Detail User
-Route::get('detailsUser', [LoginController::class, 'detailsUser'])->name('detailsUser');
-
-
-Route::get('listUser', [LoginController::class, 'listUser'])->name('listUser');
-
-Route::get('admin/update', [LoginController::class, 'showupdatea'])->name('showupdatea');
-Route::post('admin/update', [LoginController::class, 'updateAdmin'])->name('updateAdmin');
-
-
-
 
 //Cart
 Route::get('/gio-hang', [GioHangController::class, 'index'])->name('gioHang.index');
@@ -71,7 +72,7 @@ Route::post('/gio-hang/them/{id}', [GioHangController::class, 'them'])->name('gi
 Route::patch('/gio-hang/cap-nhat/{id}', [GioHangController::class, 'update'])->name('gioHang.update');
 Route::delete('/gio-hang/xoa/{id}', [GioHangController::class, 'remove'])->name('gioHang.remove');
 
-//Địa Chỉ 
+//Địa Chỉ
 Route::middleware(['auth'])->group(function () {
     Route::resource('dia-chi', DiaChiController::class);
     Route::get('/dia-chi/get-quan-huyen/{thanhPhoId}', [DiaChiController::class, 'getQuanHuyen']);
