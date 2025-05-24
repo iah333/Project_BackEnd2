@@ -1,26 +1,44 @@
 @extends('layouts.admin')
 
 @section('content')
-    <h1>Cập nhật người dùng</h1>
+    <div class="container mt-4">
+        <h2 class="mb-4 text-primary">Cập nhật người dùng</h2>
 
-    <form method="POST" action="{{ route('admin.users.update', $user->id) }}" enctype="multipart/form-data">
-        @csrf
-        @method('PUT')
-        <label>Tên:</label>
-        <input type="text" name="name" value="{{ $user->name }}" required><br>
+        <form method="POST" action="{{ route('admin.users.update', $user->id) }}" enctype="multipart/form-data"
+            class="bg-white shadow-sm rounded p-4">
+            @csrf
+            @method('PUT')
 
-        <label>Email:</label>
-        <input type="email" name="email" value="{{ $user->email }}" required><br>
+            <div class="mb-3">
+                <label class="form-label">Tên</label>
+                <input type="text" name="name" class="form-control" value="{{ $user->name }}" required>
+            </div>
 
-        <label>Password mới (nếu đổi):</label>
-        <input type="password" name="password"><br>
+            <div class="mb-3">
+                <label class="form-label">Email</label>
+                <input type="email" name="email" class="form-control" value="{{ $user->email }}" required>
+            </div>
 
-        <label>Avatar:</label>
-        <input type="file" name="avatar"><br>
-        @if ($user->avatar)
-            <img src="{{ asset('avatar/' . $user->avatar) }}" width="100">
-        @endif
+            <div class="mb-3">
+                <label class="form-label">Mật khẩu mới (nếu muốn thay đổi)</label>
+                <input type="password" name="password" class="form-control" placeholder="Để trống nếu không thay đổi">
+            </div>
 
-        <button type="submit">Cập nhật</button>
-    </form>
+            <div class="mb-3">
+                <label class="form-label">Ảnh đại diện (avatar)</label>
+                <input type="file" name="avatar" class="form-control">
+                @if ($user->avatar)
+                    <div class="mt-2">
+                        <img src="{{ asset('avatar/' . $user->avatar) }}" alt="avatar" class="rounded-circle"
+                            width="80" height="80">
+                    </div>
+                @endif
+            </div>
+
+            <button type="submit" class="btn btn-success">
+                <i class="fas fa-save me-1"></i> Cập nhật
+            </button>
+            <a href="{{ route('admin.users.index') }}" class="btn btn-secondary ms-2">Quay lại</a>
+        </form>
+    </div>
 @endsection

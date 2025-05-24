@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\File;
 
 class LoginController extends Controller
 {
-    public function showLogin()
+    public function showlogin()
     {
         return view(view: 'auth.login');
     }
@@ -23,7 +23,7 @@ class LoginController extends Controller
         $status = Auth::attempt(['email' => $email, 'password' => $password]);
         if ($status) {
             $user = Auth::user();
-            $urlRedirect = "/users";
+            $urlRedirect = "/";
             if ($user->is_admin) {
                 $urlRedirect = "/admin";
             };
@@ -32,7 +32,7 @@ class LoginController extends Controller
         return back()->with('msg', 'Email hoặc mật khẩu không chính xác');
     }
 
-    public function showRegister()
+    public function showregister()
     {
         return view('auth.Register');
     }

@@ -44,6 +44,19 @@
             color: rgba(255, 255, 255, 1);
             background-color: #3c3c3f;
         }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .user-name {
+            color: rgba(255, 255, 255, 0.6);
+            margin-left: 8px;
+            font-weight: 500;
+        }
     </style>
 </head>
 
@@ -73,11 +86,17 @@
                     @endif
                 </ul>
                 <!-- Dịch icon sang trái bằng cách thêm margin phải -->
-                <div class="dropdown ms-5 me-1"> <!-- Bỏ ms-auto, thêm me-3 -->
-                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                        aria-expanded="false">
+                <div class="dropdown ms-5 me-1 d-flex align-items-center">
+                    @auth
+                        <img src="{{ asset('avatar/' . (auth()->user()->avatar ?? 'default.jpg')) }}" class="user-avatar"
+                            alt="avatar">
+                        <span class="user-name">{{ auth()->user()->name }}!</span>
+                    @else
                         <i class="fas fa-user" style="font-size: 24px; color: rgba(255, 255, 255, 0.6);"></i>
-                    </a>
+                    @endauth
+                    <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
+                        aria-expanded="false" style="margin-left: 5px;"></a>
+
                     <ul class="dropdown-menu">
                         @guest
                             <li><a class="dropdown-item" href="{{ route('login') }}">Đăng nhập</a></li>
@@ -87,7 +106,7 @@
                             <li><a class="dropdown-item" href="{{ route('logout') }}"
                                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Đăng
                                     xuất</a></li>
-                            <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none;">
+                            <form id="logout-form" action="{{ route('logout') }}" method="GET" style="display: none;">
                                 @csrf
                             </form>
                             <li><a class="dropdown-item" href="">Hồ sơ</a></li>

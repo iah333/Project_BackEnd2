@@ -21,6 +21,7 @@ class User extends Authenticatable
         'email',
         'password',
         'is_admin',
+        'super_admin',
         'avatar',
     ];
 
@@ -48,7 +49,7 @@ class User extends Authenticatable
     }
     public function gioHangs()
     {
-        return $this->hasMany(GioHang::class, 'id', 'id'); 
+        return $this->hasMany(GioHang::class, 'id', 'id');
     }
     public function diaChis()
     {

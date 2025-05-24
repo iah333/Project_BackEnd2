@@ -56,6 +56,10 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     // Hiển thị chi tiết người dùng
     Route::get('/{id}', [UserController::class, 'show'])->name('users.show');
 
+    //  Đặt CREATE lên trên để tránh bị hiểu nhầm là {id}
+    Route::get('users/create', [UserController::class, 'create'])->name('users.create');
+    Route::post('users/store', [UserController::class, 'store'])->name('users.store');
+
     // Sửa người dùng
     Route::get('/users/{id}/edit', [UserController::class, 'edit'])->name('users.edit');
 
