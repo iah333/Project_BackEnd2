@@ -11,14 +11,17 @@ return new class extends Migration
         Schema::create('donhang', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('dia_chi_id')->nullable(); // Thêm cột địa chỉ nếu cần
             $table->string('ten_nguoi_nhan')->nullable();
             $table->string('so_dien_thoai')->nullable();
             $table->dateTime('ngay_dat');
-            $table->decimal('tong_tien', 10, 2);
-            $table->string('trang_thai')->default('chờ xử lý');
+            $table->decimal('tong_tien', 15, 2);
+            $table->string('trang_thai')->default('chờ xử lý'); // Trạng thái xử lý đơn hàng
+            $table->string('trang_thai_thanh_toan')->default('chưa thanh toán'); // Trạng thái thanh toán
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            
         });
     }
 
@@ -26,5 +29,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('donhang');
     }
-
 };

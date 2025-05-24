@@ -15,6 +15,10 @@ class DonHang extends Model
         'ngay_dat',
         'tong_tien',
         'trang_thai',
+        'trang_thai_thanh_toan',
+    ];
+    protected $casts = [
+        'ngay_dat' => 'datetime',
     ];
 
     public function user()
@@ -29,6 +33,6 @@ class DonHang extends Model
 
     public function chiTietDonHangs()
     {
-        return $this->hasMany(ChiTietDonHang::class, 'don_hang_id');
+        return $this->hasMany(ChiTietDonHang::class, 'donhang_id');
     }
 }

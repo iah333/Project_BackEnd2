@@ -79,6 +79,13 @@ Route::middleware(['auth'])->group(function () {
 });
 
 Route::middleware(['auth'])->group(function () {
+    Route::get('/don-hang', [DonHangController::class, 'index'])->name('don-hang.index');
     Route::post('/don-hang', [DonHangController::class, 'store'])->name('don-hang.store');
     Route::get('/don-hang/{id}', [DonHangController::class, 'show'])->name('don-hang.show');
+    Route::delete('/don-hang/{id}', [DonHangController::class, 'destroy'])->name('don-hang.destroy');
+    Route::get('/don-hang/{id}/thanh-toan', [DonHangController::class, 'thanhToan'])->name('don-hang.thanh-toan');
+    Route::get('/don-hang/{id}/success', [DonHangController::class, 'success'])->name('don-hang.success');
 });
+    Route::get('/don-hang/callback', [DonHangController::class, 'callback'])->name('don-hang.callback');
+
+

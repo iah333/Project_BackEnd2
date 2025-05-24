@@ -18,7 +18,7 @@
 
         @if ($gioHangs->isEmpty())
             <p>Giỏ hàng của bạn đang trống!</p>
-            <a href="{{ route('gio-hang.index') }}" class="btn btn-primary">Quay lại giỏ hàng</a>
+            <a href="{{ route('gioHang.index') }}" class="btn btn-primary">Quay lại giỏ hàng</a>
         @else
             <h4>Sản phẩm trong giỏ hàng</h4>
             <table class="table">

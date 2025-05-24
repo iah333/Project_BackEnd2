@@ -13,7 +13,7 @@ return new class extends Migration
             $table->unsignedBigInteger('donhang_id');
             $table->unsignedBigInteger('sanpham_id');
             $table->integer('so_luong');
-            $table->decimal('gia', 10, 2);
+            $table->decimal('gia', 15, 2);
 
             $table->primary(['donhang_id', 'sanpham_id']);
 
