@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\GioHang;
+use App\Models\GioHangSanPham;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -145,5 +147,22 @@ class UserController extends Controller
         User::create($data);
 
         return redirect()->route('admin.users.index')->with('success', 'Tạo admin mới thành công!');
+    }
+
+    public function profile()
+    {
+        $user = Auth::user();
+        $addresses = $user->diaChis; // Lấy danh sách địa chỉ của người dùng
+
+        // Lấy giỏ hàng, tạo mới nếu chưa có
+        if (!$user->gioHang) {
+            $gioHang = new GioHang();
+            $gioHang->user_id = $user->id;
+            $gioHang->save();
+        }
+
+        $cartItems = $user->gioHang->sanPhams ?? collect(); // Lấy sản phẩm trong giỏ hàng
+
+        return view('admin.users.profile', compact('user', 'addresses', 'cartItems'));
     }
 }

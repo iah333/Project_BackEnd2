@@ -9,29 +9,33 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
         integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
         crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <link rel="stylesheet" href="{{ asset('css/admin.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/admin.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/index.css') }}">
 </head>
 
 <body>
     <div class="d-flex">
         <!-- Sidebar -->
-        <div class="sidebar p-3">
+        <div class="sidebar p-3 {{ session()->get('sidebar_collapsed', false) ? 'collapsed' : '' }}">
             <div class="user-info">
                 <img src="{{ asset('avatar/' . (auth()->user()->avatar ?? 'default.jpg')) }}" class="user-avatar"
                     alt="avatar">
                 <h6 class="text-white mb-0">{{ auth()->user()->name }}</h6>
             </div>
             <a href="#" class="{{ request()->is('admin/dashboard') ? 'active' : '' }}"><i
-                    class="fas fa-tachometer-alt"></i> Dashboard</a>
+                    class="fas fa-tachometer-alt"></i><span> Dashboard</span></a>
             <a href="{{ route('admin.users.index') }}"
-                class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}"><i class="fas fa-users"></i> Quản lý
-                người dùng</a>
-            <a href="#"><i class="fas fa-file-alt"></i> Bài viết</a>
+                class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}"><i class="fas fa-users"></i><span>
+                    Quản lý người dùng</span></a>
+            <a href="#"><i class="fas fa-file-alt"></i><span> Bài viết</span></a>
             <a href="{{ route('sanPham.index') }}" class="{{ request()->routeIs('sanPham.*') ? 'active' : '' }}"><i
-                    class="fas fa-box"></i> Sản Phẩm</a>
+                    class="fas fa-box"></i><span> Sản Phẩm</span></a>
             <a href="{{ route('danhMuc.index') }}" class="{{ request()->routeIs('danhMuc.*') ? 'active' : '' }}"><i
-                    class="fas fa-list"></i> Danh Mục</a>
-            <a href="#"><i class="fas fa-cog"></i> Cài đặt</a>
+                    class="fas fa-list"></i><span> Danh Mục</span></a>
+            <a href="#"><i class="fas fa-cog"></i><span> Cài đặt</span></a>
+            <button class="btn btn-sm btn-outline-light toggle-sidebar w-100" onclick="toggleSidebar()">
+                <i class="fas fa-angle-double-left"></i>
+            </button>
         </div>
 
         <!-- Content -->
@@ -40,8 +44,8 @@
             <nav
                 class="navbar navbar-light bg-light mb-4 rounded shadow-sm px-4 d-flex justify-content-between align-items-center">
                 <div class="d-flex align-items-center gap-3">
-                    <i class="fas fa-bars menu-toggle"></i>
-                    <span class="navbar-brand">Admin Panel</span>
+                    <i class="fas fa-bars menu-toggle" onclick="toggleMobileSidebar()"></i>
+                    <span class="navbar-brand">Admin Control Panel</span>
                 </div>
                 <div class="user-dropdown">
                     <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle"
@@ -78,10 +82,30 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-        // Toggle sidebar on mobile
-        document.querySelector('.menu-toggle').addEventListener('click', function() {
-            document.querySelector('.sidebar').classList.toggle('active');
-        });
+        // Toggle mobile sidebar
+        function toggleMobileSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const menuToggle = document.querySelector('.menu-toggle');
+            sidebar.classList.toggle('active');
+            menuToggle.classList.toggle('active');
+        }
+
+        // Toggle sidebar collapse
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('collapsed');
+            // Lưu trạng thái vào session
+            fetch('/toggle-sidebar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    collapsed: sidebar.classList.contains('collapsed')
+                })
+            });
+        }
 
         // SweetAlert2 for logout
         function showLogoutConfirm(event) {

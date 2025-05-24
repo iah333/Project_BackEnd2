@@ -70,6 +70,11 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     Route::delete('/users/{id}', [UserController::class, 'delete'])->name('users.delete');
 });
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/user/profile', [UserController::class, 'profile'])->name('users.profile'); 
+    Route::put('/user/profile', [UserController::class, 'updateProfile'])->name('user.profile.update');
+});
+
 //Cart
 Route::get('/gio-hang', [GioHangController::class, 'index'])->name('gioHang.index');
 Route::post('/gio-hang/them/{id}', [GioHangController::class, 'them'])->name('gioHang.them');

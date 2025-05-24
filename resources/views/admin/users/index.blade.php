@@ -1,48 +1,6 @@
 @extends('layouts.admin')
 
 @section('content')
-    <!-- Thêm CSS tùy chỉnh -->
-    <style>
-        .table-container {
-            background: white;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .table thead th {
-            background-color: #343a40;
-            color: white;
-            border: none;
-        }
-
-        .table tbody tr {
-            transition: all 0.3s ease;
-        }
-
-        .table tbody tr:hover {
-            background-color: #f8f9fa;
-            transform: translateY(-2px);
-        }
-
-        .btn-group .btn {
-            margin-right: 5px;
-            border-radius: 5px;
-        }
-
-        .pagination .page-link {
-            border-radius: 5px;
-            margin: 0 3px;
-            color: #007bff;
-        }
-
-        .pagination .page-item.active .page-link {
-            background-color: #007bff;
-            border-color: #007bff;
-        }
-    </style>
-
     <!-- Thêm SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
@@ -106,17 +64,19 @@
                                 </td>
                                 <td>
                                     <div class="btn-group" role="group">
-                                        <a href="{{ route('admin.users.show', $user->id) }}" class="btn btn-info btn-sm">
-                                            <i class="fas fa-eye"></i> Chi tiết
-                                        </a>
-                                        <a href="{{ route('admin.users.edit', $user->id) }}" class="btn btn-warning btn-sm">
-                                            <i class="fas fa-edit"></i> Sửa
-                                        </a>
+                                        <button type="button" class="btn btn-info btn-sm action-btn">
+                                            <a href="{{ route('admin.users.show', $user->id) }}" class="decoration"><i
+                                                    class="fas fa-eye"></i><span> Chi tiết</span></a>
+                                        </button>
+                                        <button type="button" class="btn btn-warning btn-sm action-btn">
+                                            <a href="{{ route('admin.users.edit', $user->id) }}" class="decoration"> <i
+                                                    class="fas fa-edit"></i><span> Sửa</span></a>
+                                        </button>
                                         <form action="{{ route('admin.users.delete', $user->id) }}" method="POST"
-                                            class="d-inline">
+                                            class="d-inline delete-form">
                                             @csrf
                                             @method('DELETE')
-                                            <button type="submit" class="btn btn-danger btn-sm delete-btn"
+                                            <button type="submit" class="btn btn-danger btn-sm action-btn delete-btn"
                                                 data-id="{{ $user->id }}">
                                                 <i class="fas fa-trash"></i> Xóa
                                             </button>
@@ -142,26 +102,28 @@
 
     <!-- Script xử lý SweetAlert2 -->
     <script>
-        // Xác nhận xóa
-        document.querySelectorAll('.delete-btn').forEach(button => {
-            button.addEventListener('click', function(e) {
-                e.preventDefault();
-                const form = this.closest('form');
-                const userId = this.dataset.id;
+        document.addEventListener('DOMContentLoaded', function() {
+            const deleteButtons = document.querySelectorAll('.delete-btn');
 
-                Swal.fire({
-                    title: 'Bạn có chắc?',
-                    text: 'Hành động này không thể hoàn tác!',
-                    icon: 'warning',
-                    showCancelButton: true,
-                    confirmButtonColor: '#d33',
-                    cancelButtonColor: '#3085d6',
-                    confirmButtonText: 'Xóa',
-                    cancelButtonText: 'Hủy'
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        form.submit();
-                    }
+            deleteButtons.forEach(button => {
+                button.addEventListener('click', function(event) {
+                    event.preventDefault(); // Ngăn submit form ngay lập tức
+
+                    const form = this.closest('form'); // Lấy form chứa nút bấm
+                    Swal.fire({
+                        title: 'Bạn có chắc chắn muốn xóa?',
+                        text: 'Hành động này không thể hoàn tác!',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Xóa',
+                        cancelButtonText: 'Hủy'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            form.submit(); // Chỉ submit nếu người dùng xác nhận
+                        }
+                    });
                 });
             });
         });

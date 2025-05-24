@@ -49,7 +49,7 @@ class User extends Authenticatable
     }
     public function gioHangs()
     {
-        return $this->hasMany(GioHang::class, 'id', 'id');
+        return $this->hasMany(GioHang::class, 'user_id', 'id');
     }
     public function diaChis()
     {
