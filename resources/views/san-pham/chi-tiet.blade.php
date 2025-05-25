@@ -34,7 +34,7 @@
                 <p class="text-muted">Danh mục: {{ $sanPham->danhMuc->ten_danh_muc }}</p>
                 <h3 class="text-danger">{{ number_format($sanPham->gia, 0, ',', '.') }} VNĐ</h3>
                 <p><strong>Số lượng tồn kho:</strong> {{ $sanPham->so_luong_ton }} sản phẩm</p>
-                @if($sanPham->mo_ta)
+                @if ($sanPham->mo_ta)
                     <p><strong>Mô tả:</strong> {{ $sanPham->mo_ta }}</p>
                 @endif
                 <p><strong>Ngày thêm:</strong> {{ $sanPham->created_at->format('d/m/Y H:i') }}</p>
@@ -42,8 +42,8 @@
 
                 <!-- Nút hành động -->
                 <div class="mt-4">
-                    @if($sanPham->so_luong_ton > 0)
-                        <form action="{{ route('gioHang.them', $sanPham->id) }}" method="POST" class="d-inline">
+                    @if ($sanPham->so_luong_ton > 0)
+                        <form action="{{ route('giohang.them', $sanPham->id) }}" method="POST" class="d-inline">
                             @csrf
                             <button type="submit" class="btn btn-primary">
                                 <i class="bi bi-cart-plus me-1"></i> Thêm vào giỏ hàng

@@ -73,11 +73,16 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
 Route::middleware(['auth'])->group(function () {
     Route::get('/user/profile', [UserController::class, 'profile'])->name('users.profile');
     Route::put('/user/profile', [UserController::class, 'updateProfile'])->name('user.profile.update');
+
+
+    Route::get('/gio-hang', [GioHangController::class, 'index'])->name('giohang.index');
+    Route::post('/gio-hang/them/{sanpham}', [GioHangController::class, 'them'])->name('giohang.them');
+    Route::delete('/gio-hang/xoa/{sanpham}', [GioHangController::class, 'xoa'])->name('giohang.xoa');
 });
 
 //Cart
 Route::get('/gio-hang', [GioHangController::class, 'index'])->name('gioHang.index');
-Route::post('/gio-hang/them/{id}', [GioHangController::class, 'them'])->name('gioHang.them');
+Route::post('/gio-hang/them/{id}', [GioHangController::class, 'them'])->name('giohang.them');
 Route::patch('/gio-hang/cap-nhat/{id}', [GioHangController::class, 'update'])->name('gioHang.update');
 Route::delete('/gio-hang/xoa/{id}', [GioHangController::class, 'remove'])->name('gioHang.remove');
 

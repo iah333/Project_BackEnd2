@@ -10,7 +10,6 @@
     <link rel="stylesheet" href="public/css/admin/register">
     <title>@yield('title', 'PhoneStore')</title>
     <style>
-        /* Giữ nguyên màu sắc và cải thiện giao diện */
         .navbar-custom {
             background-color: #515154;
             padding: 10px 0;

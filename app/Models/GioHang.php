@@ -14,12 +14,13 @@ class GioHang extends Model
 
     public function sanPhams()
     {
-        return $this->belongsToMany(SanPham::class, 'giohang_sanpham', 'giohang_id', 'sanpham_id')
-                   ->withPivot('so_luong');
+        return $this->belongsToMany(SanPham::class, 'giohang_sanpham')
+            ->withPivot('so_luong')
+            ->withTimestamps();
     }
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'user_id', 'id'); 
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 }
