@@ -71,7 +71,7 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
 });
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/user/profile', [UserController::class, 'profile'])->name('users.profile'); 
+    Route::get('/user/profile', [UserController::class, 'profile'])->name('users.profile');
     Route::put('/user/profile', [UserController::class, 'updateProfile'])->name('user.profile.update');
 });
 

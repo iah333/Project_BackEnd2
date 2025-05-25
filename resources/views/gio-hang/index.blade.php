@@ -39,26 +39,33 @@
                     @foreach ($cartItems as $item)
                         <tr>
                             <td>
-                                <img src="{{ asset($item->anh) }}" alt="{{ $item->ten_san_pham }}" style="width: 80px; height: auto;">
+                                <img src="{{ asset($item->anh) }}" alt="{{ $item->ten_san_pham }}"
+                                    style="width: 80px; height: auto;">
                             </td>
                             <td>{{ $item->ten_san_pham }}</td>
                             <td>{{ number_format($item->gia, 0, ',', '.') }} VNĐ</td>
                             <td>
-                                <form action="{{ route('gioHang.update', $item->id) }}" method="POST" class="d-flex align-items-center">
+                                <form action="{{ route('gioHang.update', $item->id) }}" method="POST"
+                                    class="d-flex align-items-center">
                                     @csrf
                                     @method('PATCH')
-                                    <input type="number" name="so_luong" value="{{ $item->pivot->so_luong }}" min="1" class="form-control w-25 d-inline" style="max-width: 80px;" data-gia="{{ $item->gia }}" onchange="updateTotal(this, {{ $item->id }}, {{ $item->gia }})">
+                                    <input type="number" name="so_luong" value="{{ $item->pivot->so_luong }}"
+                                        min="1" class="form-control w-25 d-inline" style="max-width: 80px;"
+                                        data-gia="{{ $item->gia }}"
+                                        onchange="updateTotal(this, {{ $item->id }}, {{ $item->gia }})">
                                     <button type="submit" class="btn btn-sm btn-success ms-2">
                                         <i class="bi bi-arrow-repeat"></i> Cập nhật
                                     </button>
                                 </form>
                             </td>
-                            <td id="total-{{ $item->id }}">{{ number_format($item->gia * $item->pivot->so_luong, 0, ',', '.') }} VNĐ</td>
+                            <td id="total-{{ $item->id }}">
+                                {{ number_format($item->gia * $item->pivot->so_luong, 0, ',', '.') }} VNĐ</td>
                             <td>
                                 <form action="{{ route('gioHang.remove', $item->id) }}" method="POST">
                                     @csrf
                                     @method('DELETE')
-                                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?')">
+                                    <button type="submit" class="btn btn-danger btn-sm"
+                                        onclick="return confirm('Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?')">
                                         <i class="bi bi-trash"></i> Xóa
                                     </button>
                                 </form>
@@ -71,9 +78,11 @@
             <div class="card p-3 mt-4">
                 <h4>Tổng cộng</h4>
                 <p><strong>Tổng số lượng:</strong> <span id="tongSoLuong">{{ $tongSoLuong }}</span></p>
-                <p><strong>Tổng giá:</strong> <span id="tongGia">{{ number_format($tongGia, 0, ',', '.') }} VNĐ</span></p>
+                <p><strong>Tổng giá:</strong> <span id="tongGia">{{ number_format($tongGia, 0, ',', '.') }} VNĐ</span>
+                </p>
                 <a href="{{ route('sanPham.index') }}" class="btn btn-secondary">Tiếp tục mua sắm</a>
-                <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal" data-bs-target="#datHangModal">Đặt Hàng</button>
+                <button type="button" class="btn btn-primary float-end" data-bs-toggle="modal"
+                    data-bs-target="#datHangModal">Đặt Hàng</button>
             </div>
         @endif
 
@@ -94,14 +103,16 @@
                                     <h5 class="card-title">Thông tin người nhận</h5>
                                     <div class="mb-3">
                                         <label for="ten_nguoi_nhan" class="form-label">Tên người nhận</label>
-                                        <input type="text" name="ten_nguoi_nhan" id="ten_nguoi_nhan" class="form-control" value="{{ old('ten_nguoi_nhan', Auth::user()->name) }}" required>
+                                        <input type="text" name="ten_nguoi_nhan" id="ten_nguoi_nhan" class="form-control"
+                                            value="{{ old('ten_nguoi_nhan', Auth::user()->name) }}" required>
                                         @error('ten_nguoi_nhan')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
                                     </div>
                                     <div class="mb-3">
                                         <label for="so_dien_thoai" class="form-label">Số điện thoại</label>
-                                        <input type="text" name="so_dien_thoai" id="so_dien_thoai" class="form-control" value="{{ old('so_dien_thoai') }}" required>
+                                        <input type="text" name="so_dien_thoai" id="so_dien_thoai" class="form-control"
+                                            value="{{ old('so_dien_thoai') }}" required>
                                         @error('so_dien_thoai')
                                             <div class="text-danger">{{ $message }}</div>
                                         @enderror
@@ -119,8 +130,10 @@
                                             <option value="">Chọn địa chỉ</option>
                                             @foreach ($diaChis as $diaChi)
                                                 <option value="{{ $diaChi->id }}">
-                                                    {{ $diaChi->dia_chi_chi_tiet }}, {{ $diaChi->phuongXa->ten_phuong_xa ?? 'N/A' }},
-                                                    {{ $diaChi->quanHuyen->ten_quan_huyen ?? 'N/A' }}, {{ $diaChi->thanhPho->ten_thanh_pho ?? 'N/A' }}
+                                                    {{ $diaChi->dia_chi_chi_tiet }},
+                                                    {{ $diaChi->phuongXa->ten_phuong_xa ?? 'N/A' }},
+                                                    {{ $diaChi->quanHuyen->ten_quan_huyen ?? 'N/A' }},
+                                                    {{ $diaChi->thanhPho->ten_thanh_pho ?? 'N/A' }}
                                                 </option>
                                             @endforeach
                                         </select>
@@ -135,7 +148,8 @@
                             <div class="card mb-3">
                                 <div class="card-body">
                                     <h5 class="card-title">Tổng thanh toán</h5>
-                                    <p><strong>Tổng tiền:</strong> <span>{{ number_format($tongGia, 0, ',', '.') }} VNĐ</span></p>
+                                    <p><strong>Tổng tiền:</strong> <span>{{ number_format($tongGia, 0, ',', '.') }}
+                                            VNĐ</span></p>
                                     <button type="submit" class="btn btn-success w-100">Tiến hành đặt hàng</button>
                                 </div>
                             </div>
@@ -157,7 +171,8 @@
         function updateTotal(input, maSanPham, gia) {
             const soLuong = parseInt(input.value) || 0;
             const tong = gia * soLuong;
-            document.getElementById('total-' + maSanPham).textContent = new Intl.NumberFormat('vi-VN').format(tong) + ' VNĐ';
+            document.getElementById('total-' + maSanPham).textContent = new Intl.NumberFormat('vi-VN').format(tong) +
+            ' VNĐ';
 
             let tongSoLuong = 0;
             let tongGia = 0;

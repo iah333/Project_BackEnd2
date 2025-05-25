@@ -6,41 +6,71 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
-        integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" /> <!-- Thêm Font Awesome -->
+        integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="public/css/admin/register">
     <title>@yield('title', 'PhoneStore')</title>
     <style>
+        /* Giữ nguyên màu sắc và cải thiện giao diện */
         .navbar-custom {
             background-color: #515154;
+            padding: 10px 0;
+            position: relative;
+            z-index: 1000;
+            /* Đảm bảo navbar nằm trên các phần tử khác */
+        }
+
+        .navbar-custom .navbar-brand img {
+            height: 40px;
         }
 
         .navbar-custom .nav-link {
             color: rgba(255, 255, 255, 0.6);
-            transition: color 0.3s ease;
+            font-weight: 500;
+            padding: 10px 15px;
+            transition: color 0.3s ease, background-color 0.3s ease;
         }
 
         .navbar-custom .nav-link:hover {
             color: rgba(255, 255, 255, 1);
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 5px;
         }
 
-        .navbar-brand img {
-            height: 40px;
+        /* Toggler icon trên mobile */
+        .navbar-custom .navbar-toggler {
+            border-color: rgba(255, 255, 255, 0.6);
         }
 
-        .carousel-item img {
-            height: 400px;
-            object-fit: cover;
+        .navbar-custom .navbar-toggler-icon {
+            background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba(255, 255, 255, 0.6)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
         }
 
-        /* Style cho dropdown user */
-        .dropdown-menu {
+        /* Dropdown user - Cải thiện vị trí và tránh tràn ra ngoài */
+        .navbar-custom .dropdown-menu {
             background-color: #515154;
+            border: none;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            min-width: 180px;
+            /* Đảm bảo dropdown đủ rộng */
+            right: 0;
+            /* Đặt dropdown bên phải */
+            left: auto;
+            /* Loại bỏ căn trái mặc định */
         }
 
-        .dropdown-item {
+        .navbar-custom .dropdown-item {
             color: rgba(255, 255, 255, 0.6);
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        .dropdown-item:hover {
+        .navbar-custom .dropdown-item i {
+            margin-right: 8px;
+        }
+
+        .navbar-custom .dropdown-item:hover {
             color: rgba(255, 255, 255, 1);
             background-color: #3c3c3f;
         }
@@ -50,6 +80,7 @@
             height: 32px;
             object-fit: cover;
             border-radius: 50%;
+            border: 2px solid rgba(255, 255, 255, 0.3);
         }
 
         .user-name {
@@ -57,26 +88,100 @@
             margin-left: 8px;
             font-weight: 500;
         }
+
+        /* Search form */
+        .search-form {
+            max-width: 200px;
+        }
+
+        .search-form .form-control {
+            background-color: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: #fff;
+            font-size: 0.875rem;
+        }
+
+        .search-form .form-control::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .search-form .form-control:focus {
+            background-color: rgba(255, 255, 255, 0.2);
+            box-shadow: none;
+            color: #fff;
+        }
+
+        .search-form .btn {
+            background-color: transparent;
+            border: none;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .search-form .btn:hover {
+            color: rgba(255, 255, 255, 1);
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 991px) {
+            .navbar-custom .navbar-nav {
+                background-color: #515154;
+                padding: 10px;
+                border-radius: 5px;
+            }
+
+            .navbar-custom .nav-link {
+                padding: 10px;
+            }
+
+            .search-form {
+                max-width: 100%;
+                margin: 10px 0;
+            }
+
+            .navbar-custom .dropdown-menu {
+                right: auto;
+                /* Đặt lại vị trí trên mobile */
+                left: 0;
+                width: 100%;
+            }
+
+            .dropdown.ms-5 {
+                margin-left: 0 !important;
+            }
+        }
+
+        /* Đảm bảo dropdown không tràn ra ngoài màn hình */
+        .dropdown-menu[data-bs-popper] {
+            margin-top: 0;
+            transform: none !important;
+        }
     </style>
 </head>
 
 <body>
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container-fluid">
+            <!-- Logo -->
             <a class="navbar-brand" href="/">
                 <img src="{{ asset('images/logo.png') }}" alt="Logo PhoneStore">
             </a>
+
+            <!-- Toggler Button -->
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
                 aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
-            <div class="collapse navbar-collapse justify-content-center" id="navbarNav">
-                <ul class="navbar-nav">
+
+            <!-- Navbar Content -->
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <!-- Menu Categories -->
+                <ul class="navbar-nav mx-auto">
                     @if (isset($danhMucs) && is_countable($danhMucs))
                         @foreach ($danhMucs as $danhMuc)
                             <li class="nav-item">
-                                <a class="nav-link"
-                                    href="{{ route('danh-muc.slug', $danhMuc->ten_danh_muc) }}">{{ $danhMuc->ten_danh_muc }}</a>
+                                <a class="nav-link" href="{{ route('danh-muc.slug', $danhMuc->ten_danh_muc) }}">
+                                    {{ $danhMuc->ten_danh_muc }}
+                                </a>
                             </li>
                         @endforeach
                     @else
@@ -85,8 +190,18 @@
                         </li>
                     @endif
                 </ul>
-                <!-- Dịch icon sang trái bằng cách thêm margin phải -->
-                <div class="dropdown ms-5 me-1 d-flex align-items-center">
+
+                <!-- Search Form -->
+                <form class="search-form d-flex me-3" action="{{ route('sanPham.index') }}" method="GET">
+                    <input class="form-control me-2" type="search" name="search" placeholder="Tìm kiếm sản phẩm..."
+                        aria-label="Search">
+                    <button class="btn" type="submit">
+                        <i class="fas fa-search"></i>
+                    </button>
+                </form>
+
+                <!-- User Dropdown -->
+                <div class="dropdown ms-5 d-flex align-items-center">
                     @auth
                         <img src="{{ asset('avatar/' . (auth()->user()->avatar ?? 'default.jpg')) }}" class="user-avatar"
                             alt="avatar">
@@ -97,20 +212,40 @@
                     <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
                         aria-expanded="false" style="margin-left: 5px;"></a>
 
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu dropdown-menu-end"> <!-- Sử dụng dropdown-menu-end -->
                         @guest
-                            <li><a class="dropdown-item" href="{{ route('login') }}">Đăng nhập</a></li>
-                            <li><a class="dropdown-item" href="{{ route('register') }}">Đăng ký</a></li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('login.form') }}">
+                                    <i class="fas fa-sign-in-alt"></i> Đăng nhập
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('register.form') }}">
+                                    <i class="fas fa-user-plus"></i> Đăng ký
+                                </a>
+                            </li>
                         @endguest
                         @auth
-                            <li><a class="dropdown-item" href="{{ route('logout') }}"
-                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Đăng
-                                    xuất</a></li>
-                            <form id="logout-form" action="{{ route('logout') }}" method="GET" style="display: none;">
-                                @csrf
-                            </form>
-                            <li><a class="dropdown-item" href="{{ route('users.profile') }}">Hồ sơ</a></li>
-                            <li><a class="dropdown-item" href="{{ route('gioHang.index') }}">Giỏ Hàng</a></li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('users.profile') }}">
+                                    <i class="fas fa-user-circle"></i> Hồ sơ
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('gioHang.index') }}">
+                                    <i class="fas fa-shopping-cart"></i> Giỏ Hàng
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item" href="{{ route('logout') }}"
+                                    onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    <i class="fas fa-sign-out-alt"></i> Đăng xuất
+                                </a>
+                                <form id="logout-form" action="{{ route('logout') }}" method="GET"
+                                    style="display: none;">
+                                    @csrf
+                                </form>
+                            </li>
                         @endauth
                     </ul>
                 </div>

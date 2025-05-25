@@ -1,0 +1,75 @@
+/* Tùy chỉnh CSS cho form để khớp với giao diện */
+.signup-form {
+    background: linear-gradient(135deg, #e6f0fa 0%, #f8f9fa 100%);
+}
+
+.card {
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background-color: #fff;
+}
+
+.card-header {
+    background-color: #515154;
+    border-bottom: none;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+}
+
+.card-header h3 {
+    font-weight: 500;
+    color: rgba(255, 255, 255, 1);
+}
+
+.input-group-text {
+    background-color: #f8f9fa;
+    border-color: #ced4da;
+    color: #515154;
+}
+
+.form-control {
+    background-color: #f8f9fa;
+    border-color: #ced4da;
+    color: #333;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 0 0.25rem rgba(81, 81, 84, 0.25);
+    border-color: #515154;
+    background-color: #fff;
+}
+
+.form-control::placeholder {
+    color: #6c757d;
+}
+
+.btn-dark {
+    background-color: #515154;
+    border-color: #515154;
+    transition: background-color 0.3s ease;
+}
+
+.btn-dark:hover {
+    background-color: #3c3c3f;
+    border-color: #3c3c3f;
+}
+
+.small {
+    font-size: 0.875rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 576px) {
+    .col-md-5.col-lg-4 {
+        padding: 0 15px;
+    }
+
+    .card {
+        border-radius: 0;
+        box-shadow: none;
+    }
+
+    .card-header {
+        border-radius: 0;
+    }
+}

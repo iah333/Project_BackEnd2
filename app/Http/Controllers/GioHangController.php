@@ -83,8 +83,12 @@ class GioHangController extends Controller
             Log::info('Cập nhật số lượng thành công', ['so_luong' => $soLuong]);
 
             $cartItems = $gioHang->sanPhams()->get();
-            $tongSoLuong = $cartItems->sum(function ($item) { return $item->pivot->so_luong; });
-            $tongGia = $cartItems->sum(function ($item) { return $item->gia * $item->pivot->so_luong; });
+            $tongSoLuong = $cartItems->sum(function ($item) {
+                return $item->pivot->so_luong;
+            });
+            $tongGia = $cartItems->sum(function ($item) {
+                return $item->gia * $item->pivot->so_luong;
+            });
 
             return redirect()->route('gioHang.index') // Sửa từ 'show' thành 'index'
                 ->with('success', 'Cập nhật số lượng thành công!')
@@ -104,8 +108,12 @@ class GioHangController extends Controller
             GioHangSanPham::where('giohang_id', $gioHang->id)->where('sanpham_id', $id)->delete();
 
             $cartItems = $gioHang->sanPhams()->get();
-            $tongSoLuong = $cartItems->sum(function ($item) { return $item->pivot->so_luong; });
-            $tongGia = $cartItems->sum(function ($item) { return $item->gia * $item->pivot->so_luong; });
+            $tongSoLuong = $cartItems->sum(function ($item) {
+                return $item->pivot->so_luong;
+            });
+            $tongGia = $cartItems->sum(function ($item) {
+                return $item->gia * $item->pivot->so_luong;
+            });
 
             return redirect()->route('gioHang.index') // Sửa từ 'show' thành 'index'
                 ->with('success', 'Xóa sản phẩm khỏi giỏ hàng thành công!')
