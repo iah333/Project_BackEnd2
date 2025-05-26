@@ -77,14 +77,14 @@ Route::middleware(['auth'])->group(function () {
 
     Route::get('/gio-hang', [GioHangController::class, 'index'])->name('giohang.index');
     Route::post('/gio-hang/them/{sanpham}', [GioHangController::class, 'them'])->name('giohang.them');
-    Route::delete('/gio-hang/xoa/{sanpham}', [GioHangController::class, 'xoa'])->name('giohang.xoa');
+    Route::delete('/gio-hang/xoa/{sanpham}', [GioHangController::class, 'remove'])->name('giohang.xoa');
 });
 
 //Cart
-Route::get('/gio-hang', [GioHangController::class, 'index'])->name('gioHang.index');
-Route::post('/gio-hang/them/{id}', [GioHangController::class, 'them'])->name('giohang.them');
-Route::patch('/gio-hang/cap-nhat/{id}', [GioHangController::class, 'update'])->name('gioHang.update');
-Route::delete('/gio-hang/xoa/{id}', [GioHangController::class, 'remove'])->name('gioHang.remove');
+// Route::get('/gio-hang', [GioHangController::class, 'index'])->name('gioHang.index');
+// Route::post('/gio-hang/them/{id}', [GioHangController::class, 'them'])->name('giohang.them');
+// Route::patch('/gio-hang/cap-nhat/{id}', [GioHangController::class, 'update'])->name('gioHang.update');
+// Route::delete('/gio-hang/xoa/{id}', [GioHangController::class, 'remove'])->name('gioHang.remove');
 
 //Địa Chỉ
 Route::middleware(['auth'])->group(function () {

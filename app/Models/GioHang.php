@@ -14,9 +14,8 @@ class GioHang extends Model
 
     public function sanPhams()
     {
-        return $this->belongsToMany(SanPham::class, 'giohang_sanpham')
-            ->withPivot('so_luong')
-            ->withTimestamps();
+        return $this->belongsToMany(SanPham::class, 'giohang_sanpham','giohang_id','sanpham_id')
+            ->withPivot('so_luong');
     }
 
     public function user()
