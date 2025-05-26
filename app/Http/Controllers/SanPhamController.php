@@ -57,7 +57,6 @@ class SanPhamController extends Controller
 
             return redirect()->route('sanPham.index')->with('success', 'Sản phẩm đã được tạo!');
         } catch (\Exception $e) {
-            \Log::error('Lỗi khi thêm sản phẩm: ' . $e->getMessage());
             return back()->withErrors(['error' => 'Không thể thêm sản phẩm: ' . $e->getMessage()]);
         }
     }

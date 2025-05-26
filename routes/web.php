@@ -83,7 +83,7 @@ Route::middleware(['auth'])->group(function () {
 //Cart
 // Route::get('/gio-hang', [GioHangController::class, 'index'])->name('gioHang.index');
 // Route::post('/gio-hang/them/{id}', [GioHangController::class, 'them'])->name('giohang.them');
-// Route::patch('/gio-hang/cap-nhat/{id}', [GioHangController::class, 'update'])->name('gioHang.update');
+Route::patch('/gio-hang/cap-nhat/{id}', [GioHangController::class, 'update'])->name('gioHang.update');
 // Route::delete('/gio-hang/xoa/{id}', [GioHangController::class, 'remove'])->name('gioHang.remove');
 
 //Địa Chỉ
