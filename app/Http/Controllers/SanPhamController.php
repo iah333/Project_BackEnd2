@@ -38,13 +38,12 @@ class SanPhamController extends Controller
             $data = $request->all();
             if ($request->hasFile('anh')) {
                 $danhMuc = DanhMucSanPham::findOrFail($request->danhmuc_id);
-                // Chuẩn hóa tên thư mục: thay khoảng trắng bằng "-", loại bỏ ký tự đặc biệt
-                $folderName = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $danhMuc->ten_danh_muc));
-                $folder = 'img/' . $folderName;
+                // Giữ nguyên tên danh mục có dấu
+                $folder = 'img/' . $danhMuc->ten_danh_muc;
 
-                // Kiểm tra thư mục đã tồn tại
+                // Tự động tạo thư mục nếu chưa tồn tại
                 if (!File::exists(public_path($folder))) {
-                    return back()->withErrors(['anh' => 'Thư mục ' . $folder . ' không tồn tại. Vui lòng kiểm tra lại thư mục danh mục.']);
+                    File::makeDirectory(public_path($folder), 0755, true);
                 }
 
                 $file = $request->file('anh');
@@ -101,13 +100,12 @@ class SanPhamController extends Controller
             }
 
             $danhMuc = DanhMucSanPham::findOrFail($request->danhmuc_id);
-            // Chuẩn hóa tên thư mục: thay khoảng trắng bằng "-", loại bỏ ký tự đặc biệt
-            $folderName = preg_replace('/[^A-Za-z0-9\-]/', '', str_replace(' ', '-', $danhMuc->ten_danh_muc));
-            $folder = 'img/' . $folderName;
+            // Giữ nguyên tên danh mục có dấu
+            $folder = 'img/' . $danhMuc->ten_danh_muc;
 
-            // Kiểm tra thư mục đã tồn tại
+            // Tự động tạo thư mục nếu chưa tồn tại
             if (!File::exists(public_path($folder))) {
-                return back()->withErrors(['anh' => 'Thư mục ' . $folder . ' không tồn tại. Vui lòng kiểm tra lại thư mục danh mục.']);
+                File::makeDirectory(public_path($folder), 0755, true);
             }
 
             $file = $request->file('anh');

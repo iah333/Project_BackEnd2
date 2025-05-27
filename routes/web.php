@@ -41,6 +41,8 @@ Route::prefix('admin')->middleware(['auth', 'auth.login'])->group(function () {
         ->names('danhMuc')
         ->parameters(['danh-muc' => 'danhmuc']);
 
+    Route::get('/danh-muc/{slug}', [App\Http\Controllers\DanhMucSanPhamController::class, 'showBySlug'])->name('danh-muc.slug');
+
     // Resource sản phẩm
     Route::resource('san-pham', SanPhamController::class)
         ->names('sanPham')

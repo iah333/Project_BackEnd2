@@ -37,8 +37,7 @@
                 @if ($sanPham->mo_ta)
                     <p><strong>Mô tả:</strong> {{ $sanPham->mo_ta }}</p>
                 @endif
-                <p><strong>Ngày thêm:</strong> {{ $sanPham->created_at->format('d/m/Y H:i') }}</p>
-                <p><strong>Cập nhật lần cuối:</strong> {{ $sanPham->updated_at->format('d/m/Y H:i') }}</p>
+
 
                 <!-- Nút hành động -->
                 <div class="mt-4">

@@ -54,6 +54,8 @@ class DatabaseSeeder extends Seeder
             ThanhPhoSeeder::class,
             QuanHuyenSeeder::class,
             PhuongXaSeeder::class,
+            DanhMucSeeder::class,
+            SanPhamSeeder::class,   
         ]);
     }
 }
