@@ -1,0 +1,32 @@
+.breadcrumb-custom {
+    border-radius: 5px;
+    padding: 8px 15px;
+}
+
+.breadcrumb-item + .breadcrumb-item::before {
+    content: ">"; /* Dấu phân cách giữa các mục */
+}
+.main-content {
+    background-color: #f5f5f7; /* Màu nền cho cả trang chủ và trang danh mục */
+    min-height: 100vh; /* Đảm bảo màu nền phủ toàn bộ trang */
+}
+
+.main-content h2,
+.main-content .text-center p {
+    color: #333333; /* Đảm bảo chữ dễ đọc trên nền nhạt */
+}
+.main-image {
+    border: 1px solid #ddd;
+    padding: 10px;
+    background-color: #f9f9f9;
+}
+
+.thumbnail {
+    border: 1px solid #ddd;
+    padding: 5px;
+    transition: border-color 0.3s ease;
+}
+
+.thumbnail:hover {
+    border-color: #007bff;
+}

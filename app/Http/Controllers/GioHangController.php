@@ -16,13 +16,9 @@ class GioHangController extends Controller
     {
         try {
             $sanPham = SanPham::findOrFail($ma_san_pham);
-            Log::info('Sản phẩm tìm thấy', ['sanpham_id' => $sanPham->id]);
-
             $gioHang = GioHang::firstOrCreate(['user_id' => Auth::id()]);
-            Log::info('Giỏ hàng đã tạo hoặc tìm thấy', ['id' => $gioHang->id, 'user_id' => Auth::id()]);
 
             if (is_null($gioHang->id)) {
-                Log::error('id là null', ['gio_hang' => $gioHang]);
                 throw new \Exception('Không thể lấy id từ giỏ hàng.');
             }
 
@@ -47,44 +43,40 @@ class GioHangController extends Controller
     public function update(Request $request, $id)
     {
         try {
-            Log::info('Bắt đầu cập nhật số lượng', ['sanpham_id' => $id, 'user_id' => Auth::id()]);
 
             if (!Auth::check()) {
-                Log::error('Người dùng chưa đăng nhập');
                 return redirect()->back()->with('error', 'Vui lòng đăng nhập để cập nhật giỏ hàng.');
             }
 
             $gioHang = GioHang::where('user_id', Auth::id())->firstOrFail();
-            Log::info('Giỏ hàng tìm thấy', ['id' => $gioHang->id]);
 
             $soLuong = $request->input('so_luong');
-            Log::info('Số lượng nhận được', ['so_luong' => $soLuong]);
 
             if (!is_numeric($soLuong) || $soLuong < 1) {
-                Log::error('Số lượng không hợp lệ', ['so_luong' => $soLuong]);
                 return redirect()->back()->with('error', 'Số lượng không hợp lệ, phải lớn hơn 0.');
             }
 
             $sanPham = SanPham::findOrFail($id);
             $soLuongTon = $sanPham->so_luong_ton;
-            Log::info('Số lượng tồn của sản phẩm', ['sanpham_id' => $id, 'so_luong_ton' => $soLuongTon]);
 
             $currentQuantity = GioHangSanPham::where('giohang_id', $gioHang->id)->where('sanpham_id', $id)->first();
 
             if ($currentQuantity) {
                 $newTotal = $currentQuantity->so_luong + ($soLuong - $currentQuantity->so_luong);
                 if ($newTotal > $soLuongTon) {
-                    Log::error('Số lượng vượt quá tồn kho', ['so_luong' => $soLuong, 'so_luong_ton' => $soLuongTon]);
                     return redirect()->back()->with('error', 'Số lượng cập nhật vượt quá số lượng tồn (' . $soLuongTon . ').');
                 }
             }
 
             GioHangSanPham::where('giohang_id', $gioHang->id)->where('sanpham_id', $id)->update(['so_luong' => (int) $soLuong]);
-            Log::info('Cập nhật số lượng thành công', ['so_luong' => $soLuong]);
 
             $cartItems = $gioHang->sanPhams()->get();
-            $tongSoLuong = $cartItems->sum(function ($item) { return $item->pivot->so_luong; });
-            $tongGia = $cartItems->sum(function ($item) { return $item->gia * $item->pivot->so_luong; });
+            $tongSoLuong = $cartItems->sum(function ($item) {
+                return $item->pivot->so_luong;
+            });
+            $tongGia = $cartItems->sum(function ($item) {
+                return $item->gia * $item->pivot->so_luong;
+            });
 
             return redirect()->route('gioHang.index') // Sửa từ 'show' thành 'index'
                 ->with('success', 'Cập nhật số lượng thành công!')
@@ -104,8 +96,12 @@ class GioHangController extends Controller
             GioHangSanPham::where('giohang_id', $gioHang->id)->where('sanpham_id', $id)->delete();
 
             $cartItems = $gioHang->sanPhams()->get();
-            $tongSoLuong = $cartItems->sum(function ($item) { return $item->pivot->so_luong; });
-            $tongGia = $cartItems->sum(function ($item) { return $item->gia * $item->pivot->so_luong; });
+            $tongSoLuong = $cartItems->sum(function ($item) {
+                return $item->pivot->so_luong;
+            });
+            $tongGia = $cartItems->sum(function ($item) {
+                return $item->gia * $item->pivot->so_luong;
+            });
 
             return redirect()->route('gioHang.index') // Sửa từ 'show' thành 'index'
                 ->with('success', 'Xóa sản phẩm khỏi giỏ hàng thành công!')
@@ -122,26 +118,24 @@ class GioHangController extends Controller
         $gioHang = GioHang::where('user_id', Auth::id())->first();
 
         if (!$gioHang) {
-            return view('gio-hang.index', [
-                'cartItems' => collect([]),
-                'tongSoLuong' => 0,
-                'tongGia' => 0,
-                'diaChis' => collect([]), // Truyền giá trị mặc định
-            ])->with('message', 'Giỏ hàng của bạn hiện tại trống.');
+            $cartItems = collect([]);
+            $tongSoLuong = 0;
+            $tongGia = 0;
+            $diaChis = collect([]);
+            $message = 'Giỏ hàng của bạn hiện tại trống.';
+        } else {
+            $cartItems = $gioHang->sanPhams()->get();
+            $tongSoLuong = $cartItems->sum(function ($item) {
+                return $item->pivot->so_luong;
+            });
+            $tongGia = $cartItems->sum(function ($item) {
+                return $item->gia * $item->pivot->so_luong;
+            });
+            $diaChis = DiaChi::where('user_id', Auth::id())->get();
+            Log::info('DiaChis: ' . $diaChis->count());
         }
 
-        $cartItems = $gioHang->sanPhams()->get();
-
-        $tongSoLuong = $cartItems->sum(function ($item) {
-            return $item->pivot->so_luong;
-        });
-        $tongGia = $cartItems->sum(function ($item) {
-            return $item->gia * $item->pivot->so_luong;
-        });
-
-        $diaChis = DiaChi::where('user_id', Auth::id())->get();
-        Log::info('DiaChis: ' . $diaChis->count());
-
-        return view('gio-hang.index', compact('cartItems', 'tongSoLuong', 'tongGia', 'diaChis'));
+        return view('gio-hang.index', compact('gioHang', 'cartItems', 'tongSoLuong', 'tongGia', 'diaChis'))
+            ->with('message', $message ?? null);
     }
 }

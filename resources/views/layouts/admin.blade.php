@@ -1,85 +1,72 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin Dashboard</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f8f9fa;
-        }
-
-        .sidebar {
-            height: 100vh;
-            background-color: #343a40;
-        }
-
-        .sidebar a {
-            color: #ffffff;
-            padding: 15px;
-            display: block;
-            text-decoration: none;
-        }
-
-        .sidebar a:hover {
-            background-color: #495057;
-        }
-
-        .content {
-            padding: 20px;
-        }
-
-        .card {
-            border-radius: 12px;
-        }
-
-        .user-avatar {
-            width: 35px;
-            height: 35px;
-            object-fit: cover;
-            border-radius: 50%;
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+        integrity="sha512-9usAa10IRO0HhonpyAIVpjrylPvoDwiPUiKdWk5t3PyolY1cOd4DSE0Ga+ri4AuTroPR5aQvXU9xC6qOPnzFeg=="
+        crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <link rel="stylesheet" href="{{ asset('css/admin/admin.css') }}">
+    <link rel="stylesheet" href="{{ asset('css/admin/index.css') }}">
 </head>
 
 <body>
     <div class="d-flex">
         <!-- Sidebar -->
-        <div class="sidebar p-3">
-            <div class="d-flex align-items-center mb-4">
-                <img src="{{ asset('uploads/' . (auth()->user()->picture ?? 'default.jpg')) }}" class="user-avatar me-2" alt="Avatar">
+        <div class="sidebar p-3 {{ session()->get('sidebar_collapsed', false) ? 'collapsed' : '' }}">
+            <div class="user-info">
+                <img src="{{ asset('avatar/' . (auth()->user()->avatar ?? 'default.jpg')) }}" class="user-avatar"
+                    alt="avatar">
                 <h6 class="text-white mb-0">{{ auth()->user()->name }}</h6>
             </div>
-            <a href="#">Dashboard</a>
-            <a href=" {{ Route('listUser') }}">Quản lý người dùng</a>
-            <a href="#">Bài viết</a>
-            <a href="{{ route('sanPham.index') }}">Sản Phẩm</a>
-            <a href="{{ route('danhMuc.index') }}">Danh Mục</a>
-            <a href="#">Cài đặt</a>
+            <a href="#" class="{{ request()->is('admin/dashboard') ? 'active' : '' }}"><i
+                    class="fas fa-tachometer-alt"></i><span> Dashboard</span></a>
+            <a href="{{ route('admin.users.index') }}"
+                class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}"><i class="fas fa-users"></i><span>
+                    Quản lý người dùng</span></a>
+            <a href="#"><i class="fas fa-file-alt"></i><span> Bài viết</span></a>
+            <a href="{{ route('sanPham.index') }}" class="{{ request()->routeIs('sanPham.*') ? 'active' : '' }}"><i
+                    class="fas fa-box"></i><span> Sản Phẩm</span></a>
+            <a href="{{ route('danhMuc.index') }}" class="{{ request()->routeIs('danhMuc.*') ? 'active' : '' }}"><i
+                    class="fas fa-list"></i><span> Danh Mục</span></a>
+            <a href="#"><i class="fas fa-cog"></i><span> Cài đặt</span></a>
+            <button class="btn btn-sm btn-outline-light toggle-sidebar w-100" onclick="toggleSidebar()">
+                <i class="fas fa-angle-double-left"></i>
+            </button>
         </div>
 
         <!-- Content -->
         <div class="content flex-grow-1">
-            <!-- Navbar with user dropdown -->
-            <nav class="navbar navbar-light bg-light mb-4 rounded shadow-sm px-4 d-flex justify-content-between align-items-center">
-                <span class="navbar-brand">Admin Panel</span>
-
-                <div class="dropdown">
-                    <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle" id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
+            <!-- Navbar -->
+            <nav
+                class="navbar navbar-light bg-light mb-4 rounded shadow-sm px-4 d-flex justify-content-between align-items-center">
+                <div class="d-flex align-items-center gap-3">
+                    <i class="fas fa-bars menu-toggle" onclick="toggleMobileSidebar()"></i>
+                    <span class="navbar-brand">Admin Control Panel</span>
+                </div>
+                <div class="user-dropdown">
+                    <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle"
+                        id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         <span class="me-2">{{ auth()->user()->name }}</span>
-                        <img src="{{ asset('uploads/' . (auth()->user()->picture ?? 'default.jpg')) }}" alt="Avatar" class="user-avatar">
+                        <img src="{{ asset('avatar/' . (auth()->user()->avatar ?? 'default.jpg')) }}" alt="avatar"
+                            class="user-avatar">
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">
-                        <li><a class="dropdown-item" href="{{ Route('detailsUser') }}">Thông tin cá nhân</a></li>
-                        <li><a class="dropdown-item" href="#">Cài đặt</a></li>
+                        <li><a class="dropdown-item" href="{{ route('admin.users.show', auth()->user()->id) }}"><i
+                                    class="fas fa-user me-2"></i> Thông tin cá nhân</a></li>
+                        <li><a class="dropdown-item" href="#"><i class="fas fa-cog me-2"></i> Cài đặt</a></li>
                         <li>
                             <hr class="dropdown-divider">
                         </li>
                         <li>
-                            <form method="get" action="{{ route('signout') }}" class="px-3">
+                            <form method="GET" action="{{ route('logout') }}" class="px-3">
                                 @csrf
-                                <button type="submit" class="btn btn-link text-danger p-0">Đăng xuất</button>
+                                <button type="submit" class="btn btn-link logout-btn p-0"
+                                    onclick="showLogoutConfirm(event)"><i class="fas fa-sign-out-alt me-2"></i> Đăng
+                                    xuất</button>
                             </form>
                         </li>
                     </ul>
@@ -90,7 +77,58 @@
         </div>
     </div>
 
+    <!-- Bootstrap JS and SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script>
+        // Toggle mobile sidebar
+        function toggleMobileSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            const menuToggle = document.querySelector('.menu-toggle');
+            sidebar.classList.toggle('active');
+            menuToggle.classList.toggle('active');
+        }
+
+        // Toggle sidebar collapse
+        function toggleSidebar() {
+            const sidebar = document.querySelector('.sidebar');
+            sidebar.classList.toggle('collapsed');
+            // Lưu trạng thái vào session
+            fetch('/toggle-sidebar', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').getAttribute('content')
+                },
+                body: JSON.stringify({
+                    collapsed: sidebar.classList.contains('collapsed')
+                })
+            });
+        }
+
+        // SweetAlert2 for logout
+        function showLogoutConfirm(event) {
+            event.preventDefault();
+            const form = event.target.closest('form');
+            Swal.fire({
+                title: 'Đăng xuất',
+                text: 'Bạn có chắc muốn đăng xuất khỏi hệ thống?',
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#dc3545',
+                cancelButtonColor: '#6c757d',
+                confirmButtonText: 'Đăng xuất',
+                cancelButtonText: 'Hủy'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    form.submit();
+                }
+            });
+        }
+    </script>
+
+    @stack('scripts')
 </body>
 
 </html>

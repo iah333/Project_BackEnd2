@@ -26,13 +26,4 @@ return new class extends Migration
     {
         Schema::dropIfExists('chitietdonhang');
     }
-    public function donHang()
-    {
-        return $this->belongsTo(DonHang::class, 'don_hang_id');
-    }
-
-    public function sanPham()
-    {
-        return $this->belongsTo(SanPham::class, 'san_pham_id');
-    }
 };

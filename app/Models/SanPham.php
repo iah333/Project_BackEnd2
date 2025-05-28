@@ -19,8 +19,7 @@ class SanPham extends Model
     }
     public function gioHangs()
     {
-        return $this->belongsToMany(GioHang::class, 'giohang_sanpham', 'sanpham_id', 'giohang_id')
-            ->withPivot('so_luong_ton')
-            ->withTimestamps();
+        return $this->belongsToMany(GioHang::class, 'giohang_sanpham')
+            ->withPivot('so_luong');
     }
 }
