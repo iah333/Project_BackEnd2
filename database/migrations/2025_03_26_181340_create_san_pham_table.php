@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('danhmuc_id');
             $table->string('ten_san_pham');
-            $table->decimal('gia', 10, 2);
+            $table->decimal('gia', 15, 2);
             $table->integer('so_luong_ton');
             $table->string('anh')->nullable();
             $table->timestamps();
