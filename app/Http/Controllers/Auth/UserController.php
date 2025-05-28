@@ -2,15 +2,17 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
+use App\Models\User;
+use App\Models\DiaChi;
 use App\Models\GioHang;
-use App\Models\GioHangSanPham;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use App\Models\GioHangSanPham;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Session;
-use App\Models\User;
-use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 
 class UserController extends Controller
 {
@@ -37,7 +39,6 @@ class UserController extends Controller
 
         return view('admin.users.edit', compact('user'));
     }
-
 
     private function uploadAvatar(Request $request, $oldAvatar = null)
     {
@@ -148,21 +149,60 @@ class UserController extends Controller
 
         return redirect()->route('admin.users.index')->with('success', 'Tạo admin mới thành công!');
     }
-
+    /**
+     * Hiển thị trang hồ sơ người dùng
+     */
     public function profile()
     {
         $user = Auth::user();
-        $addresses = $user->diaChis; // Lấy danh sách địa chỉ của người dùng
+        $addresses = DiaChi::where('user_id', Auth::id())->get();
+        $gioHang = GioHang::where('user_id', Auth::id())->first();
 
-        // Lấy giỏ hàng, tạo mới nếu chưa có
-        if (!$user->gioHang) {
-            $gioHang = new GioHang();
-            $gioHang->user_id = $user->id;
-            $gioHang->save();
+        $cartItems = $gioHang ? $gioHang->sanPhams()->get() : collect([]);
+        $tongSoLuong = $cartItems->sum(function ($item) {
+            return $item->pivot->so_luong;
+        });
+        $tongGia = $cartItems->sum(function ($item) {
+            return $item->gia * $item->pivot->so_luong;
+        });
+
+        return view('admin.users.profile', compact('user', 'addresses', 'cartItems', 'tongSoLuong', 'tongGia'));
+    }
+
+    /**
+     * Hiển thị form chỉnh sửa thông tin người dùng (cho người dùng thường)
+     */
+    public function editUser()
+    {
+        $user = Auth::user();
+        return view('admin.users.edit-users', compact('user'));
+    }
+
+    /**
+     * Cập nhật thông tin người dùng (cho người dùng thường)
+     */
+    public function updateUser(Request $request)
+    {
+        $user = Auth::user();
+
+        $request->validate([
+            'name' => 'required|string|max:255',
+            'email' => 'required|email|unique:users,email,' . $user->id,
+            'password' => 'nullable|min:6',
+            'avatar' => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
+        ]);
+
+        $user->name = $request->name;
+        $user->email = $request->email;
+        if ($request->filled('password')) {
+            $user->password = Hash::make($request->password);
+        }
+        if ($request->hasFile('avatar')) {
+            $user->avatar = $this->uploadAvatar($request, $user->avatar);
         }
 
-        $cartItems = $user->gioHang->sanPhams ?? collect(); // Lấy sản phẩm trong giỏ hàng
+        $user->save();
 
-        return view('admin.users.profile', compact('user', 'addresses', 'cartItems'));
+        return redirect()->route('users.profile')->with('success', 'Cập nhật hồ sơ thành công!');
     }
 }

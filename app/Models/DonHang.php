@@ -26,9 +26,9 @@ class DonHang extends Model
     {
         return $this->belongsTo(DiaChi::class, 'dia_chi_id');
     }
-
-    public function chiTietDonHangs()
+    public function sanPhams()
     {
-        return $this->hasMany(ChiTietDonHang::class, 'don_hang_id');
+        return $this->belongsToMany(SanPham::class, 'chitietdonhang', 'donhang_id', 'sanpham_id')
+            ->withPivot('so_luong', 'gia');
     }
 }

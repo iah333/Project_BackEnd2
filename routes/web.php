@@ -71,8 +71,8 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/user/profile', [UserController::class, 'profile'])->name('users.profile');
-    Route::put('/user/profile', [UserController::class, 'updateProfile'])->name('user.profile.update');
-
+    Route::get('/profile/edit', [UserController::class, 'editUser'])->name('profile.editU');
+    Route::put('/profile/update', [UserController::class, 'updateUser'])->name('profile.updateU');
 
     Route::get('/gio-hang', [GioHangController::class, 'index'])->name('giohang.index');
     Route::post('/gio-hang/them/{sanpham}', [GioHangController::class, 'them'])->name('giohang.them');
@@ -85,9 +85,11 @@ Route::middleware(['auth'])->group(function () {
 Route::patch('/gio-hang/cap-nhat/{id}', [GioHangController::class, 'update'])->name('gioHang.update');
 // Route::delete('/gio-hang/xoa/{id}', [GioHangController::class, 'remove'])->name('gioHang.remove');
 
+// Route cho thanh toán
+Route::post('/don-hang', [DonHangController::class, 'store'])->name('don-hang.store');
 //Địa Chỉ
 Route::middleware(['auth'])->group(function () {
-    Route::resource('dia-chi', DiaChiController::class);
+    Route::resource('user/dia-chi', DiaChiController::class);
     Route::get('/dia-chi/get-quan-huyen/{thanhPhoId}', [DiaChiController::class, 'getQuanHuyen']);
     Route::get('/dia-chi/get-phuong-xa/{quanHuyenId}', [DiaChiController::class, 'getPhuongXa']);
 });
