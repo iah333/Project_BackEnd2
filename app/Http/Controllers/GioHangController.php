@@ -105,13 +105,49 @@ class GioHangController extends Controller
                 return $item->gia * $item->pivot->so_luong;
             });
 
-            return redirect()->route('gioHang.index') // Sửa từ 'show' thành 'index'
-                ->with('success', 'Xóa sản phẩm khỏi giỏ hàng thành công!')
-                ->with('tongSoLuong', $tongSoLuong)
-                ->with('tongGia', $tongGia);
+            return response()->json([
+                'success' => true,
+                'message' => 'Xóa sản phẩm khỏi giỏ hàng thành công!',
+                'tongSoLuong' => $tongSoLuong,
+                'tongGia' => $tongGia
+            ]);
         } catch (\Exception $e) {
             Log::error('Lỗi khi xóa sản phẩm: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Không thể xóa sản phẩm khỏi giỏ hàng.');
+            return response()->json(['success' => false, 'message' => 'Không thể xóa sản phẩm khỏi giỏ hàng.'], 500);
+        }
+    }
+
+    public function removeMultiple(Request $request)
+    {
+        try {
+            $gioHang = GioHang::where('user_id', Auth::id())->firstOrFail();
+            $selectedItems = $request->input('selectedItems', []);
+
+            if (empty($selectedItems)) {
+                return response()->json(['success' => false, 'message' => 'Không có sản phẩm nào được chọn để xóa.'], 400);
+            }
+
+            GioHangSanPham::where('giohang_id', $gioHang->id)
+                ->whereIn('sanpham_id', $selectedItems)
+                ->delete();
+
+            $cartItems = $gioHang->sanPhams()->get();
+            $tongSoLuong = $cartItems->sum(function ($item) {
+                return $item->pivot->so_luong;
+            });
+            $tongGia = $cartItems->sum(function ($item) {
+                return $item->gia * $item->pivot->so_luong;
+            });
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Xóa các sản phẩm được chọn thành công!',
+                'tongSoLuong' => $tongSoLuong,
+                'tongGia' => $tongGia
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Lỗi khi xóa nhiều sản phẩm: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Không thể xóa các sản phẩm được chọn.'], 500);
         }
     }
 
@@ -137,7 +173,8 @@ class GioHangController extends Controller
             Log::info('DiaChis: ' . $diaChis->count());
         }
 
-        return view('gio-hang.index', compact('gioHang', 'cartItems', 'tongSoLuong', 'tongGia', 'diaChis',))
+        return view('gio-hang.index', compact('gioHang', 'cartItems', 'tongSoLuong', 'tongGia', 'diaChis'))
             ->with('message', $message ?? null);
     }
 }
+?>

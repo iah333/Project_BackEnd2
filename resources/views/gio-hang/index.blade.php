@@ -47,14 +47,16 @@
 
                     <!-- Sản phẩm -->
                     @foreach ($cartItems as $item)
-                        <div class="d-flex align-items-center p-3 border-bottom hover-bg-light">
+                        <div class="d-flex align-items-center p-3 border-bottom hover-bg-light" data-product-id="{{ $item->id }}">
                             <!-- Checkbox -->
                             <div class="cart-item text-center">
-                                <input type="checkbox" name="selectedItems[]" value="{{ $item->id }}" class="form-check-input item-checkbox" onchange="updateCheckoutButton()">
+                                <input type="checkbox" name="selectedItems[]" value="{{ $item->id }}"
+                                    class="form-check-input item-checkbox" onchange="updateCheckoutButton()">
                             </div>
                             <!-- Ảnh -->
                             <div class="cart-item text-center">
-                                <img src="{{ asset($item->anh) }}" alt="{{ $item->ten_san_pham }}" class="w-20 h-20 object-cover rounded border" style="width: 80px; height: 80px;">
+                                <img src="{{ asset($item->anh) }}" alt="{{ $item->ten_san_pham }}"
+                                    class="w-20 h-20 object-cover rounded border" style="width: 80px; height: 80px;">
                             </div>
                             <!-- Đơn giá -->
                             <div class="cart-item text-center text-accent fw-medium">
@@ -63,9 +65,12 @@
                             <!-- Số lượng -->
                             <div class="cart-item text-center">
                                 <div class="d-inline-flex align-items-center quantity-control">
-                                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="updateQuantity({{ $item->id }}, {{ $item->gia }}, -1)">-</button>
-                                    <input type="number" id="quantity-{{ $item->id }}" value="{{ $item->pivot->so_luong }}" min="1" class="form-control w-50 text-center mx-2" readonly>
-                                    <button type="button" class="btn btn-sm btn-outline-secondary" onclick="updateQuantity({{ $item->id }}, {{ $item->gia }}, 1)">+</button>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                                        onclick="updateQuantity({{ $item->id }}, {{ $item->gia }}, -1)">-</button>
+                                    <input type="number" id="quantity-{{ $item->id }}" value="{{ $item->pivot->so_luong }}" min="1"
+                                        class="form-control w-50 text-center mx-2" readonly>
+                                    <button type="button" class="btn btn-sm btn-outline-secondary"
+                                        onclick="updateQuantity({{ $item->id }}, {{ $item->gia }}, 1)">+</button>
                                 </div>
                             </div>
                             <!-- Số tiền -->
@@ -74,96 +79,103 @@
                             </div>
                             <!-- Thao tác -->
                             <div class="cart-item text-center">
-                                <form action="{{ route('giohang.xoa', $item->id) }}" method="POST">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-link text-danger text-decoration-none" onclick="return confirm('Xóa sản phẩm này?')">
-                                        Xóa
-                                    </button>
-                                </form>
+                                <button type="button" class="btn btn-link text-danger text-decoration-none"
+                                    onclick="deleteSingleItem({{ $item->id }})">Xóa</button>
                             </div>
                         </div>
                     @endforeach
                 </div>
 
+                <!-- Modal Đặt Hàng -->
+                <div class="modal fade" id="datHangModal" tabindex="-1" aria-labelledby="datHangModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header bg-light border-0">
+                                <h5 class="modal-title fs-5 fw-bold text-dark" id="datHangModalLabel">Xác nhận đặt hàng</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body p-4">
+                                <form action="{{ route('don-hang.store') }}" method="POST" id="datHangForm">
+                                    @csrf
+                                    <!-- Thông tin người nhận -->
+                                    <div class="bg-white p-4 rounded border mb-3">
+                                        <h5 class="fs-6 fw-bold text-dark mb-3">Thông tin người nhận</h5>
+                                        <div class="mb-3">
+                                            <label for="ten_nguoi_nhan" class="form-label text-muted">Tên người nhận</label>
+                                            <input type="text" name="ten_nguoi_nhan" id="ten_nguoi_nhan"
+                                                class="form-control border-accent"
+                                                value="{{ old('ten_nguoi_nhan', Auth::user()->name) }}" required>
+                                            @error('ten_nguoi_nhan')
+                                                <div class="text-danger text-sm mt-1">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                        <div class="mb-3">
+                                            <label for="so_dien_thoai" class="form-label text-muted">Số điện thoại</label>
+                                            <input type="text" name="so_dien_thoai" id="so_dien_thoai"
+                                                class="form-control border-accent" value="{{ old('so_dien_thoai') }}" required>
+                                            @error('so_dien_thoai')
+                                                <div class="text-danger text-sm mt-1">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <!-- Địa chỉ nhận hàng -->
+                                    <div class="bg-white p-4 rounded border mb-3">
+                                        <h5 class="fs-6 fw-bold text-dark mb-3">Địa chỉ nhận hàng</h5>
+                                        <div class="mb-3">
+                                            <label for="dia_chi_id" class="form-label text-muted">Chọn địa chỉ</label>
+                                            <select name="dia_chi_id" id="dia_chi_id" class="form-control border-accent" required>
+                                                <option value="">Chọn địa chỉ</option>
+                                                @foreach ($diaChis as $diaChi)
+                                                    <option value="{{ $diaChi->id }}">
+                                                        {{ $diaChi->dia_chi_chi_tiet }},
+                                                        {{ $diaChi->phuongXa->ten_phuong_xa ?? 'N/A' }},
+                                                        {{ $diaChi->quanHuyen->ten_quan_huyen ?? 'N/A' }},
+                                                        {{ $diaChi->thanhPho->ten_thanh_pho ?? 'N/A' }}
+                                                    </option>
+                                                @endforeach
+                                            </select>
+                                            @error('dia_chi_id')
+                                                <div class="text-danger text-sm mt-1">{{ $message }}</div>
+                                            @enderror
+                                        </div>
+                                    </div>
+
+                                    <!-- Tổng thanh toán -->
+                                    <div class="bg-white p-4 rounded border">
+                                        <h5 class="fs-6 fw-bold text-dark mb-3">Tổng thanh toán</h5>
+                                        <p class="text-muted mb-4"><strong>Tổng tiền:</strong> <span id="modalTongTien"
+                                                class="text-accent fw-medium">{{ number_format($tongGia, 0, ',', '.') }} VNĐ</span>
+                                        </p>
+                                        <input type="hidden" name="tong_tien" id="hiddenTongTien" value="{{ $tongGia }}">
+                                        <button type="submit" class="btn btn-action w-100 py-2">Xác nhận đặt hàng</button>
+                                    </div>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Tổng cộng và nút hành động -->
                 <div class="bg-white p-3 mt-4 rounded border d-flex justify-content-between align-items-center">
                     <div class="d-flex align-items-center gap-3">
-                        <input type="checkbox" id="selectAllBottom" class="form-check-input me-2" onchange="toggleSelectAll(this)">
+                        <input type="checkbox" id="selectAllBottom" class="form-check-input me-2"
+                            onchange="toggleSelectAll(this)">
                         <label for="selectAllBottom" class="text-muted">Chọn tất cả</label>
-                        <button type="button" id="deleteSelected" class="btn btn-link text-danger" onclick="deleteSelectedItems()">Xóa các mục được chọn</button>
+                        <button type="button" id="deleteSelected" class="btn btn-link text-danger"
+                            onclick="deleteSelectedItems()">Xóa các mục được chọn</button>
                     </div>
                     <div class="d-flex align-items-center gap-3">
-                        <p class="text-muted"><strong>Tổng số lượng:</strong> <span id="tongSoLuong">{{ $tongSoLuong }}</span></p>
-                        <p class="text-muted"><strong>Tổng giá:</strong> <span id="tongGia" class="text-accent fw-medium">{{ number_format($tongGia, 0, ',', '.') }} VNĐ</span></p>
-                        <button type="button" id="checkoutButton" class="btn btn-action px-4 py-2" data-bs-toggle="modal" data-bs-target="#datHangModal">Mua hàng</button>
+                        <p class="text-muted"><strong>Tổng số lượng:</strong> <span id="tongSoLuong">{{ $tongSoLuong }}</span>
+                        </p>
+                        <p class="text-muted"><strong>Tổng giá:</strong> <span id="tongGia"
+                                class="text-accent fw-medium">{{ number_format($tongGia, 0, ',', '.') }} VNĐ</span></p>
+                        <button type="button" id="checkoutButton" class="btn btn-action px-4 py-2" data-bs-toggle="modal"
+                            data-bs-target="#datHangModal">Mua hàng</button>
                     </div>
                 </div>
             </form>
         @endif
-
-        <!-- Modal Đặt Hàng -->
-        <div class="modal fade" id="datHangModal" tabindex="-1" aria-labelledby="datHangModalLabel" aria-hidden="true">
-            <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header bg-light border-0">
-                        <h5 class="modal-title fs-5 fw-bold text-dark" id="datHangModalLabel">Xác nhận đặt hàng</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body p-4">
-                        <form action="{{ route('don-hang.store') }}" method="POST" id="datHangForm">
-                            @csrf
-                            <!-- Thông tin người nhận -->
-                            <div class="bg-white p-4 rounded border mb-3">
-                                <h5 class="fs-6 fw-bold text-dark mb-3">Thông tin người nhận</h5>
-                                <div class="mb-3">
-                                    <label for="ten_nguoi_nhan" class="form-label text-muted">Tên người nhận</label>
-                                    <input type="text" name="ten_nguoi_nhan" id="ten_nguoi_nhan" class="form-control border-accent" value="{{ old('ten_nguoi_nhan', Auth::user()->name) }}" required>
-                                    @error('ten_nguoi_nhan')
-                                        <div class="text-danger text-sm mt-1">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                                <div class="mb-3">
-                                    <label for="so_dien_thoai" class="form-label text-muted">Số điện thoại</label>
-                                    <input type="text" name="so_dien_thoai" id="so_dien_thoai" class="form-control border-accent" value="{{ old('so_dien_thoai') }}" required>
-                                    @error('so_dien_thoai')
-                                        <div class="text-danger text-sm mt-1">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <!-- Địa chỉ nhận hàng -->
-                            <div class="bg-white p-4 rounded border mb-3">
-                                <h5 class="fs-6 fw-bold text-dark mb-3">Địa chỉ nhận hàng</h5>
-                                <div class="mb-3">
-                                    <label for="dia_chi_id" class="form-label text-muted">Chọn địa chỉ</label>
-                                    <select name="dia_chi_id" id="dia_chi_id" class="form-control border-accent" required>
-                                        <option value="">Chọn địa chỉ</option>
-                                        @foreach ($diaChis as $diaChi)
-                                            <option value="{{ $diaChi->id }}">
-                                                {{ $diaChi->dia_chi_chi_tiet }}, {{ $diaChi->phuongXa->ten_phuong_xa ?? 'N/A' }},
-                                                {{ $diaChi->quanHuyen->ten_quan_huyen ?? 'N/A' }}, {{ $diaChi->thanhPho->ten_thanh_pho ?? 'N/A' }}
-                                            </option>
-                                        @endforeach
-                                    </select>
-                                    @error('dia_chi_id')
-                                        <div class="text-danger text-sm mt-1">{{ $message }}</div>
-                                    @enderror
-                                </div>
-                            </div>
-
-                            <!-- Tổng thanh toán -->
-                            <div class="bg-white p-4 rounded border">
-                                <h5 class="fs-6 fw-bold text-dark mb-3">Tổng thanh toán</h5>
-                                <p class="text-muted mb-4"><strong>Tổng tiền:</strong> <span id="modalTongTien" class="text-accent fw-medium">{{ number_format($tongGia, 0, ',', '.') }} VNĐ</span></p>
-                                <input type="hidden" name="tong_tien" id="hiddenTongTien" value="{{ $tongGia }}">
-                                <button type="submit" class="btn btn-action w-100 py-2">Xác nhận đặt hàng</button>
-                            </div>
-                        </form>
-                    </div>
-                </div>
-            </div>
-        </div>
 
         <style>
             .cart-header {
@@ -229,7 +241,7 @@
             function updateQuantity(maSanPham, gia, change) {
                 const quantityInput = document.getElementById('quantity-' + maSanPham);
                 let soLuong = parseInt(quantityInput.value) || 1;
-                soLuong = Math.max(1, soLuong + change); // Không cho số lượng nhỏ hơn 1
+                soLuong = Math.max(1, soLuong + change);
                 quantityInput.value = soLuong;
 
                 // Cập nhật tổng tiền cho sản phẩm
@@ -238,7 +250,6 @@
 
                 // Cập nhật tổng số lượng và tổng giá
                 updateTotals();
-                updateCheckoutButton();
 
                 // Gửi yêu cầu AJAX để cập nhật số lượng trong backend
                 fetch('{{ route('gioHang.update', '') }}/' + maSanPham, {
@@ -249,49 +260,124 @@
                     },
                     body: JSON.stringify({ so_luong: soLuong })
                 })
-                .then(response => response.json())
-                .then(data => {
-                    if (data.success) {
-                        console.log('Cập nhật số lượng thành công');
-                    } else {
-                        alert('Lỗi: ' + (data.message || 'Không xác định'));
-                        quantityInput.value = data.so_luong || soLuong; // Khôi phục số lượng nếu lỗi
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            console.log('Cập nhật số lượng thành công');
+                            document.getElementById('tongSoLuong').textContent = data.tongSoLuong;
+                            document.getElementById('tongGia').textContent = new Intl.NumberFormat('vi-VN').format(data.tongGia) + ' VNĐ';
+                            document.getElementById('modalTongTien').textContent = new Intl.NumberFormat('vi-VN').format(data.tongGia) + ' VNĐ';
+                            document.getElementById('hiddenTongTien').value = data.tongGia;
+                        } else {
+                            alert('Lỗi: ' + (data.message || 'Không xác định'));
+                            quantityInput.value = data.so_luong || soLuong;
+                            updateTotals();
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Lỗi:', error);
+                        alert('Đã có lỗi xảy ra khi cập nhật số lượng.');
                         updateTotals();
+                    });
+            }
+
+            // Xóa một sản phẩm
+            function deleteSingleItem(maSanPham) {
+                if (!confirm('Bạn có chắc muốn xóa sản phẩm này khỏi giỏ hàng?')) return;
+
+                fetch('{{ route('giohang.xoa', '') }}/' + maSanPham, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
                     }
                 })
-                .catch(error => {
-                    console.error('Lỗi:', error);
-                    alert('Đã có lỗi xảy ra khi cập nhật số lượng.');
-                    updateTotals();
-                });
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            document.querySelector(`[data-product-id="${maSanPham}"]`).remove();
+                            document.getElementById('tongSoLuong').textContent = data.tongSoLuong;
+                            document.getElementById('tongGia').textContent = new Intl.NumberFormat('vi-VN').format(data.tongGia) + ' VNĐ';
+                            document.getElementById('modalTongTien').textContent = new Intl.NumberFormat('vi-VN').format(data.tongGia) + ' VNĐ';
+                            document.getElementById('hiddenTongTien').value = data.tongGia;
+                            updateCheckoutButton();
+                            alert(data.message);
+                            if (data.tongSoLuong === 0) {
+                                window.location.reload();
+                            }
+                        } else {
+                            alert('Lỗi: ' + (data.message || 'Không thể xóa sản phẩm.'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Lỗi:', error);
+                        alert('Đã có lỗi xảy ra khi xóa sản phẩm.');
+                    });
+            }
+
+            // Xóa các sản phẩm được chọn
+            function deleteSelectedItems() {
+                const selectedItems = Array.from(document.querySelectorAll('.item-checkbox:checked')).map(checkbox => checkbox.value);
+                if (selectedItems.length === 0) {
+                    alert('Vui lòng chọn ít nhất một sản phẩm để xóa.');
+                    return;
+                }
+
+                if (!confirm('Bạn có chắc muốn xóa các sản phẩm được chọn khỏi giỏ hàng?')) return;
+
+                fetch('{{ route('giohang.xoaNhieu') }}', {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                    },
+                    body: JSON.stringify({ selectedItems: selectedItems })
+                })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            selectedItems.forEach(id => {
+                                document.querySelector(`[data-product-id="${id}"]`).remove();
+                            });
+                            document.getElementById('tongSoLuong').textContent = data.tongSoLuong;
+                            document.getElementById('tongGia').textContent = new Intl.NumberFormat('vi-VN').format(data.tongGia) + ' VNĐ';
+                            document.getElementById('modalTongTien').textContent = new Intl.NumberFormat('vi-VN').format(data.tongGia) + ' VNĐ';
+                            document.getElementById('hiddenTongTien').value = data.tongGia;
+                            document.getElementById('selectAllBottom').checked = false;
+                            updateCheckoutButton();
+                            alert(data.message);
+                            if (data.tongSoLuong === 0) {
+                                window.location.reload();
+                            }
+                        } else {
+                            alert('Lỗi: ' + (data.message || 'Không thể xóa các sản phẩm.'));
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Lỗi:', error);
+                        alert('Đã có lỗi xảy ra khi xóa các sản phẩm.');
+                    });
             }
 
             // Hàm tính tổng số lượng và tổng giá
             function updateTotals() {
                 let tongSoLuong = 0;
                 let tongGia = 0;
-                let selectedTongGia = 0;
 
-                // Tính tổng cho tất cả sản phẩm
                 document.querySelectorAll('input[id^="quantity-"]').forEach(input => {
                     const soLuongItem = parseInt(input.value) || 0;
                     const maSanPhamItem = input.id.split('-')[1];
                     const giaItem = prices[maSanPhamItem] || 0;
-                    const checkbox = document.querySelector(`input[name="selectedItems[]"][value="${maSanPhamItem}"]`);
-
                     tongSoLuong += soLuongItem;
                     tongGia += giaItem * soLuongItem;
-
-                    // Chỉ tính tổng giá cho các sản phẩm được chọn
-                    if (checkbox && checkbox.checked) {
-                        selectedTongGia += giaItem * soLuongItem;
-                    }
                 });
 
                 document.getElementById('tongSoLuong').textContent = tongSoLuong;
                 document.getElementById('tongGia').textContent = new Intl.NumberFormat('vi-VN').format(tongGia) + ' VNĐ';
+                document.getElementById('modalTongTien').textContent = new Intl.NumberFormat('vi-VN').format(tongGia) + ' VNĐ';
+                document.getElementById('hiddenTongTien').value = tongGia;
 
-                return { tongGia, selectedTongGia };
+                return { tongSoLuong, tongGia };
             }
 
             // Chọn tất cả checkbox
@@ -319,16 +405,22 @@
 
             // Cập nhật tổng tiền trong modal
             function updateModalTotal() {
-                const { selectedTongGia } = updateTotals();
+                const { tongGia } = updateTotals();
                 const modalTongTien = document.getElementById('modalTongTien');
                 const hiddenTongTien = document.getElementById('hiddenTongTien');
-                modalTongTien.textContent = new Intl.NumberFormat('vi-VN').format(selectedTongGia) + ' VNĐ';
-                hiddenTongTien.value = selectedTongGia;
+                modalTongTien.textContent = new Intl.NumberFormat('vi-VN').format(tongGia) + ' VNĐ';
+                hiddenTongTien.value = tongGia;
             }
+
+            // Khởi tạo trạng thái ban đầu
+            document.addEventListener('DOMContentLoaded', function () {
+                updateCheckoutButton();
+                updateTotals();
+            });
 
             // Đồng bộ checkbox chọn tất cả
             document.querySelectorAll('#selectAllBottom').forEach(checkbox => {
-                checkbox.addEventListener('change', function() {
+                checkbox.addEventListener('change', function () {
                     toggleSelectAll(this);
                 });
             });
@@ -337,9 +429,6 @@
             document.getElementById('datHangModal').addEventListener('show.bs.modal', function () {
                 updateModalTotal();
             });
-
-            // Khởi tạo trạng thái ban đầu
-            updateCheckoutButton();
-            updateTotals();
         </script>
-    @endsection
+    </div>
+@endsection

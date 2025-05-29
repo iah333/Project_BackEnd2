@@ -15,7 +15,9 @@
     //Trang chủ
     Route::get('/', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
 
-    //
+    //Tìm Kiếm Sản Phẩm
+
+    Route::get('/san-pham/search', [SanPhamController::class, 'search'])->name('san-pham.search');
 
     Route::get('/danh-muc/{slug}', [App\Http\Controllers\DanhMucSanPhamController::class, 'showBySlug'])->name('danh-muc.slug');
 
@@ -85,6 +87,7 @@
         Route::get('/gio-hang', [GioHangController::class, 'index'])->name('giohang.index');
         Route::post('/gio-hang/them/{sanpham}', [GioHangController::class, 'them'])->name('giohang.them');
         Route::delete('/gio-hang/xoa/{sanpham}', [GioHangController::class, 'remove'])->name('giohang.xoa');
+        Route::delete('/gio-hang/xoa-nhieu', [GioHangController::class, 'removeMultiple'])->name('giohang.xoaNhieu');
     });
 
     //Cart
