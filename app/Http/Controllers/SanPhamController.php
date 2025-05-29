@@ -67,12 +67,11 @@ class SanPhamController extends Controller
         $danhMucs = DanhMucSanPham::all();
 
         if (Auth::check() && Auth::user()->is_admin) {
-            \Log::info('User is admin, showing admin view');
+
             return view('admin.san-pham.show', compact('sanPham', 'danhMucs'));
         }
 
-        \Log::info('User is not admin, showing chi-tiet view');
-        return view('san-pham.chi-tiet', compact('sanPham'));
+        return view('san-pham.chi-tiet', compact('sanPham','danhMucs'));
     }
 
     public function edit($id)

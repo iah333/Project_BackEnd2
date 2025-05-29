@@ -1,16 +1,36 @@
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
-    <!-- Sử dụng asset() để load CSS tùy chỉnh -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <link rel="stylesheet" href="{{ asset('css/admin/register.css') }}">
     <title>@yield('title', 'PhoneStore')</title>
     <style>
+        /* Cấu trúc cơ bản để cố định footer */
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .main-content {
+            flex: 1 0 auto; /* Cho phép nội dung mở rộng nhưng không co lại dưới footer */
+        }
+        footer {
+            flex-shrink: 0; /* Ngăn footer co lại */
+            background-color: #343a40;
+            color: white;
+            padding: 20px 0;
+            width: 100%;
+        }
+
         /* Tông màu navbar */
         .navbar-custom {
             background-color: #515154;
@@ -36,7 +56,6 @@
             border-radius: 5px;
         }
 
-        /* Các style khác giữ nguyên như trước */
         .navbar-custom .navbar-toggler {
             border-color: rgba(255, 255, 255, 0.6);
         }
@@ -205,7 +224,9 @@
         </div>
     </nav>
 
-    @yield('content')
+    <div class="main-content">
+        @yield('content')
+    </div>
 
     <footer class="bg-dark text-white py-4">
         <div class="container">
@@ -224,8 +245,6 @@
         </div>
     </footer>
 
-    <!-- Load Bootstrap JS trước nội dung -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
-
 </html>

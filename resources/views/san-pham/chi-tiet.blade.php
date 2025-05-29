@@ -7,7 +7,7 @@
         <nav aria-label="breadcrumb" style="margin-top: -10px;">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('home') }}">Trang chủ</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('danh-muc.slug', $sanPham->danhMuc->ten_danh_muc) }}">{{ $sanPham->danhMuc->ten_danh_muc }}</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('danh-muc.slug', $sanPham->danhMuc ? $sanPham->danhMuc->ten_danh_muc : '') }}">{{ $sanPham->danhMuc ? $sanPham->danhMuc->ten_danh_muc : 'Không có danh mục' }}</a></li>
                 <li class="breadcrumb-item active" aria-current="page">{{ $sanPham->ten_san_pham }}</li>
             </ol>
         </nav>
@@ -21,7 +21,7 @@
                 @if (session('tongSoLuong'))
                     - Tổng số lượng trong giỏ hàng: {{ session('tongSoLuong') }}
                 @endif
-                <a href="{{ route('gioHang.show') }}" class="btn btn-link">Xem giỏ hàng</a>
+                <a href="{{ route('giohang.index') }}" class="btn btn-link">Xem giỏ hàng</a>
             </div>
         @endif
 
@@ -44,7 +44,6 @@
                 <div class="thumbnail-images d-flex justify-content-between">
                     @for ($i = 1; $i <= 5; $i++)
                         @php
-                            // Tạo đường dẫn ảnh nhỏ dựa trên ảnh chính
                             $ext = pathinfo($sanPham->anh, PATHINFO_EXTENSION);
                             $basePath = str_replace('.' . $ext, '', $sanPham->anh);
                             $thumbnailPath = $basePath . "-$i.$ext";
@@ -57,7 +56,7 @@
             <!-- Thông tin sản phẩm -->
             <div class="col-md-6">
                 <h1>{{ $sanPham->ten_san_pham }}</h1>
-                <p class="text-muted">Danh mục: {{ $sanPham->danhMuc->ten_danh_muc }}</p>
+                <p class="text-muted">Danh mục: {{ $sanPham->danhMuc ? $sanPham->danhMuc->ten_danh_muc : 'Không có danh mục' }}</p>
                 <h3 class="text-danger">{{ number_format($sanPham->gia, 0, ',', '.') }} VNĐ</h3>
                 <p><strong>Số lượng tồn kho:</strong> {{ $sanPham->so_luong_ton }} sản phẩm</p>
                 @if ($sanPham->mo_ta)
@@ -79,6 +78,47 @@
                 </div>
             </div>
         </div>
+
+        <!-- Sản phẩm tương tự -->
+        <div class="row mt-5">
+            <h4>Sản phẩm tương tự</h4>
+            <div class="row">
+                @php
+                    // Trích xuất dòng sản phẩm và số/kích thước/chip
+                    $baseName = preg_replace('/\d+|-inch|M\d|Max|Ultra/', '', $sanPham->ten_san_pham);
+                    preg_match('/\d+|-inch|M\d|Max|Ultra/', $sanPham->ten_san_pham, $matches);
+                    $versionPart = $matches[0] ?? '';
+
+                    // Tìm các sản phẩm cùng danh mục có cùng dòng và phần số/kích thước/chip
+                    $similarProducts = \App\Models\SanPham::where('danhmuc_id', $sanPham->danhmuc_id)
+                        ->where('id', '!=', $sanPham->id)
+                        ->where(function ($query) use ($baseName, $versionPart, $sanPham) {
+                            $query->where('ten_san_pham', 'like', $baseName . '%')
+                                  ->where('ten_san_pham', 'not like', '%' . $sanPham->ten_san_pham . '%')
+                                  ->orWhere(function ($q) use ($versionPart, $sanPham) {
+                                      $q->where('ten_san_pham', 'like', '%' . $versionPart . '%')
+                                        ->where('ten_san_pham', 'not like', '%' . $sanPham->ten_san_pham . '%');
+                                  });
+                        })
+                        ->take(4)
+                        ->get();
+                @endphp
+                @forelse ($similarProducts as $similar)
+                    <div class="col-md-3 mb-3">
+                        <div class="card h-100">
+                            <img src="{{ asset($similar->anh) }}" class="card-img-top" alt="{{ $similar->ten_san_pham }}" style="height: 150px; object-fit: cover;">
+                            <div class="card-body">
+                                <h5 class="card-title">{{ $similar->ten_san_pham }}</h5>
+                                <p class="card-text text-danger">{{ number_format($similar->gia, 0, ',', '.') }} VNĐ</p>
+                                <a href="{{ route('san-pham.show', $similar->id) }}" class="btn btn-primary btn-sm">Xem chi tiết</a>
+                            </div>
+                        </div>
+                    </div>
+                @empty
+                    <p>Không có sản phẩm tương tự.</p>
+                @endforelse
+            </div>
+        </div>
     </div>
 
     <!-- JavaScript để thay đổi ảnh chính khi nhấp vào ảnh nhỏ -->
@@ -88,27 +128,5 @@
         }
     </script>
 
-    <!-- CSS để tùy chỉnh giao diện -->
-    <style>
-        .main-image {
-            background-color: #fff; /* Màu trắng */
-            border: 1px solid #ccc; /* Viền xám nhạt */
-            padding: 10px;
-            box-shadow: 5px 5px 15px rgba(0, 0, 0, 0.2), -5px -5px 15px rgba(255, 255, 255, 0.8); /* Hiệu ứng 3D */
-        }
 
-        .thumbnail {
-            border: 1px solid #ddd;
-            padding: 5px;
-            transition: border-color 0.3s ease;
-        }
-
-        .thumbnail:hover {
-            border-color: #007bff;
-        }
-
-        .thumbnail-images {
-            width: 100%; /* Đảm bảo các ảnh nhỏ chiếm toàn chiều ngang */
-        }
-    </style>
 @endsection

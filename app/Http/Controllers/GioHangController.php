@@ -6,6 +6,7 @@ use App\Models\GioHang;
 use App\Models\GioHangSanPham;
 use App\Models\SanPham;
 use App\Models\DiaChi;
+use App\Models\DanhMucSanPham;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -43,9 +44,8 @@ class GioHangController extends Controller
     public function update(Request $request, $id)
     {
         try {
-
             if (!Auth::check()) {
-                return redirect()->back()->with('error', 'Vui lòng đăng nhập để cập nhật giỏ hàng.');
+                return response()->json(['success' => false, 'message' => 'Vui lòng đăng nhập để cập nhật giỏ hàng.'], 401);
             }
 
             $gioHang = GioHang::where('user_id', Auth::id())->firstOrFail();
@@ -53,7 +53,7 @@ class GioHangController extends Controller
             $soLuong = $request->input('so_luong');
 
             if (!is_numeric($soLuong) || $soLuong < 1) {
-                return redirect()->back()->with('error', 'Số lượng không hợp lệ, phải lớn hơn 0.');
+                return response()->json(['success' => false, 'message' => 'Số lượng không hợp lệ, phải lớn hơn 0.'], 400);
             }
 
             $sanPham = SanPham::findOrFail($id);
@@ -64,7 +64,7 @@ class GioHangController extends Controller
             if ($currentQuantity) {
                 $newTotal = $currentQuantity->so_luong + ($soLuong - $currentQuantity->so_luong);
                 if ($newTotal > $soLuongTon) {
-                    return redirect()->back()->with('error', 'Số lượng cập nhật vượt quá số lượng tồn (' . $soLuongTon . ').');
+                    return response()->json(['success' => false, 'message' => 'Số lượng cập nhật vượt quá số lượng tồn (' . $soLuongTon . ').', 'so_luong' => $currentQuantity->so_luong], 400);
                 }
             }
 
@@ -78,13 +78,15 @@ class GioHangController extends Controller
                 return $item->gia * $item->pivot->so_luong;
             });
 
-            return redirect()->route('gioHang.index') // Sửa từ 'show' thành 'index'
-                ->with('success', 'Cập nhật số lượng thành công!')
-                ->with('tongSoLuong', $tongSoLuong)
-                ->with('tongGia', $tongGia);
+            return response()->json([
+                'success' => true,
+                'message' => 'Cập nhật số lượng thành công!',
+                'tongSoLuong' => $tongSoLuong,
+                'tongGia' => $tongGia
+            ]);
         } catch (\Exception $e) {
             Log::error('Lỗi khi cập nhật số lượng: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Không thể cập nhật số lượng.');
+            return response()->json(['success' => false, 'message' => 'Không thể cập nhật số lượng.'], 500);
         }
     }
 
@@ -135,7 +137,7 @@ class GioHangController extends Controller
             Log::info('DiaChis: ' . $diaChis->count());
         }
 
-        return view('gio-hang.index', compact('gioHang', 'cartItems', 'tongSoLuong', 'tongGia', 'diaChis'))
+        return view('gio-hang.index', compact('gioHang', 'cartItems', 'tongSoLuong', 'tongGia', 'diaChis',))
             ->with('message', $message ?? null);
     }
 }

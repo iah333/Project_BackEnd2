@@ -11,12 +11,13 @@ use Illuminate\Support\Facades\Auth;
 
 class DonHangController extends Controller
 {
-    public function store(Request $request)
+   public function store(Request $request)
     {
         $request->validate([
             'dia_chi_id' => 'required|exists:diachi,id',
             'ten_nguoi_nhan' => 'required|string|max:255',
             'so_dien_thoai' => 'required|regex:/^0[0-9]{9}$/',
+            'tong_tien' => 'required|numeric|min:0',
         ]);
 
         $gioHang = GioHang::where('user_id', Auth::id())->firstOrFail();
@@ -26,9 +27,21 @@ class DonHangController extends Controller
             return redirect()->back()->with('error', 'Giỏ hàng của bạn đang trống!');
         }
 
-        $tongTien = $cartItems->sum(function ($item) {
-            return $item->gia * $item->pivot->so_luong;
+        $selectedItems = $request->input('selectedItems', []);
+        if (empty($selectedItems)) {
+            return redirect()->back()->with('error', 'Vui lòng chọn ít nhất một sản phẩm để đặt hàng!');
+        }
+
+        // Lấy danh sách sản phẩm được chọn
+        $selectedCartItems = $cartItems->filter(function ($item) use ($selectedItems) {
+            return in_array($item->id, $selectedItems);
         });
+
+        if ($selectedCartItems->isEmpty()) {
+            return redirect()->back()->with('error', 'Không tìm thấy sản phẩm được chọn!');
+        }
+
+        $tongTien = $request->input('tong_tien');
 
         // Tạo đơn hàng
         $donHang = DonHang::create([
@@ -42,7 +55,7 @@ class DonHangController extends Controller
         ]);
 
         // Lưu chi tiết đơn hàng
-        foreach ($cartItems as $item) {
+        foreach ($selectedCartItems as $item) {
             ChiTietDonHang::create([
                 'don_hang_id' => $donHang->id,
                 'san_pham_id' => $item->id,
@@ -51,11 +64,12 @@ class DonHangController extends Controller
             ]);
         }
 
-        // Xóa giỏ hàng sau khi đặt hàng
-        $gioHang->sanPhams()->detach();
+        // Xóa các sản phẩm được chọn khỏi giỏ hàng
+        $gioHang->sanPhams()->detach($selectedItems);
 
         return redirect()->route('don-hang.show', $donHang->id)->with('success', 'Đặt hàng thành công!');
     }
+
 
     public function show($id)
     {
