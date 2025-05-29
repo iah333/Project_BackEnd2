@@ -29,8 +29,8 @@
                 <input type="file" name="avatar" class="form-control">
                 @if ($user->avatar)
                     <div class="mt-2">
-                        <img src="{{ asset('avatar/' . $user->avatar) }}" alt="avatar" class="rounded-circle"
-                            width="80" height="80">
+                        <img src="{{ asset(auth()->user()->avatar ?? 'avatar/default.jpg') }}" alt="avatar" width="100"
+                            height="100">
                     </div>
                 @endif
             </div>
