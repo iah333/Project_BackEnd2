@@ -67,6 +67,11 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
 
     // Xóa người dùng
     Route::delete('/users/{id}', [UserController::class, 'delete'])->name('users.delete');
+
+
+    Route::get('check/donhang', [DonHangController::class, 'index'])->name('donhang.index');
+    Route::get('check/donhang/{id}', [DonHangController::class, 'show'])->name('donhang.show');
+    Route::post('check/donhang/{id}/cap-nhat-trang-thai', [DonHangController::class, 'updateStatus'])->name('donhang.updateStatus');
 });
 
 Route::middleware(['auth'])->group(function () {
@@ -77,6 +82,10 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/gio-hang', [GioHangController::class, 'index'])->name('giohang.index');
     Route::post('/gio-hang/them/{sanpham}', [GioHangController::class, 'them'])->name('giohang.them');
     Route::delete('/gio-hang/xoa/{sanpham}', [GioHangController::class, 'remove'])->name('giohang.xoa');
+
+
+    Route::get('checking/don-hang', [DonHangController::class, 'index'])->name('don-hang.index');
+    Route::get('checking/don-hang/{id}', [DonHangController::class, 'show'])->name('user.don-hang.show');
 });
 
 //Cart
@@ -85,8 +94,6 @@ Route::middleware(['auth'])->group(function () {
 Route::patch('/gio-hang/cap-nhat/{id}', [GioHangController::class, 'update'])->name('gioHang.update');
 // Route::delete('/gio-hang/xoa/{id}', [GioHangController::class, 'remove'])->name('gioHang.remove');
 
-// Route cho thanh toán
-Route::post('/don-hang', [DonHangController::class, 'store'])->name('don-hang.store');
 //Địa Chỉ
 Route::middleware(['auth'])->group(function () {
     Route::resource('user/dia-chi', DiaChiController::class);

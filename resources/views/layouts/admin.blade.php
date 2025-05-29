@@ -18,7 +18,7 @@
         <!-- Sidebar -->
         <div class="sidebar p-3 {{ session()->get('sidebar_collapsed', false) ? 'collapsed' : '' }}">
             <div class="user-info">
-                <img src="{{ asset('avatar/' . (auth()->user()->avatar ?? 'default.jpg')) }}" class="user-avatar"
+                <img src="{{ asset(auth()->user()->avatar ?? 'avatar/default.jpg') }}" class="user-avatar"
                     alt="avatar">
                 <h6 class="text-white mb-0">{{ auth()->user()->name }}</h6>
             </div>
@@ -28,6 +28,10 @@
                 class="{{ request()->routeIs('admin.users.*') ? 'active' : '' }}"><i class="fas fa-users"></i><span>
                     Quản lý người dùng</span></a>
             <a href="#"><i class="fas fa-file-alt"></i><span> Bài viết</span></a>
+            <a href="{{ route('admin.donhang.index') }}"
+                class="{{ request()->routeIs('admin.donhang.*') ? 'active' : '' }}">
+                <i class="fas fa-receipt"></i><span> Đơn hàng</span>
+            </a>
             <a href="{{ route('sanPham.index') }}" class="{{ request()->routeIs('sanPham.*') ? 'active' : '' }}"><i
                     class="fas fa-box"></i><span> Sản Phẩm</span></a>
             <a href="{{ route('danhMuc.index') }}" class="{{ request()->routeIs('danhMuc.*') ? 'active' : '' }}"><i
@@ -51,7 +55,7 @@
                     <a href="#" class="d-flex align-items-center text-decoration-none dropdown-toggle"
                         id="userDropdown" data-bs-toggle="dropdown" aria-expanded="false">
                         <span class="me-2">{{ auth()->user()->name }}</span>
-                        <img src="{{ asset('avatar/' . (auth()->user()->avatar ?? 'default.jpg')) }}" alt="avatar"
+                        <img src="{{ asset(auth()->user()->avatar ?? 'avatar/default.jpg') }}" alt="avatar"
                             class="user-avatar">
                     </a>
                     <ul class="dropdown-menu dropdown-menu-end shadow" aria-labelledby="userDropdown">

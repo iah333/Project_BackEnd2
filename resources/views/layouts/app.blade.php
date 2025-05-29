@@ -260,10 +260,13 @@
                                         class="fas fa-user-plus"></i> Đăng ký</a></li>
                         @endguest
                         @auth
+                            <li><a class="dropdown-item" href="{{ route('don-hang.index') }}"><i
+                                        class="fas fa-user-circle"></i>Thông tin đơn hàng</a></li>
                             <li><a class="dropdown-item" href="{{ route('users.profile') }}"><i
                                         class="fas fa-user-circle"></i> Hồ sơ</a></li>
                             <li><a class="dropdown-item" href="{{ route('giohang.index') }}"><i
                                         class="fas fa-shopping-cart"></i> Giỏ Hàng</a></li>
+
                             <li><a class="dropdown-item" href="{{ route('logout') }}"
                                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i
                                         class="fas fa-sign-out-alt"></i> Đăng xuất</a>

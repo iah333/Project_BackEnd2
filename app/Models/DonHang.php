@@ -16,7 +16,9 @@ class DonHang extends Model
         'tong_tien',
         'trang_thai',
     ];
-
+    protected $casts = [
+        'ngay_dat' => 'datetime',
+    ];
     public function user()
     {
         return $this->belongsTo(User::class, 'user_id');
@@ -30,5 +32,9 @@ class DonHang extends Model
     {
         return $this->belongsToMany(SanPham::class, 'chitietdonhang', 'donhang_id', 'sanpham_id')
             ->withPivot('so_luong', 'gia');
+    }
+    public function chiTietDonHangs()
+    {
+        return $this->hasMany(ChiTietDonHang::class, 'donhang_id');
     }
 }

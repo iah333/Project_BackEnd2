@@ -109,4 +109,70 @@ class DonHangController extends Controller
             return redirect()->back()->with('error', $e->getMessage() ?: 'Có lỗi xảy ra khi đặt hàng. Vui lòng thử lại sau.');
         }
     }
+    /**
+     * ADMIN: Hiển thị tất cả đơn hàng.
+     */
+    public function index()
+    {
+        $user = Auth::user();
+
+        if ($user->is_admin || $user->super_admin) {
+            // Admin xem tất cả đơn hàng
+            $donHangs = DonHang::with(['user', 'diaChi'])->latest()->paginate(10);
+        } else {
+            // Người dùng thường chỉ xem đơn hàng của chính mình
+            $donHangs = DonHang::with('diaChi')
+                ->where('user_id', $user->id)
+                ->latest()
+                ->paginate(10);
+        }
+
+        return view($user->is_admin ? 'admin.don-hang.index' : 'admin.users.don-hang.index', compact('donHangs'));
+    }
+
+    /**
+     * ADMIN: Xem chi tiết đơn hàng.
+     */
+    public function show($id)
+    {
+        $user = Auth::user();
+        $donHang = DonHang::with(['user', 'diaChi.thanhPho', 'diaChi.quanHuyen', 'diaChi.phuongXa', 'chiTietDonHangs.sanPham'])
+            ->find($id);
+
+        if (!$donHang) {
+
+            return redirect()->route('admin.don-hang.index')->with('error', 'Đơn hàng không tồn tại.');
+        }
+
+        if (!$user->is_admin && !$user->super_admin && $donHang->user_id !== $user->id) {
+            abort(403, 'Bạn không có quyền xem đơn hàng này.');
+        }
+
+        $view = $user->is_admin || $user->super_admin ? 'admin.don-hang.show' : 'admin.users.don-hang.show';
+
+        return view($view, compact('donHang'));
+    }
+
+    /**
+     * ADMIN: Cập nhật trạng thái đơn hàng.
+     */
+    public function updateStatus(Request $request, $id)
+    {
+        $user = Auth::user();
+
+        // Chỉ admin mới có quyền cập nhật trạng thái
+        if (!$user->is_admin && !$user->super_admin) {
+            abort(403, 'Bạn không có quyền cập nhật trạng thái đơn hàng.');
+        }
+
+        $donHang = DonHang::findOrFail($id);
+        $request->validate([
+            'trang_thai' => 'required|string|in:chờ thanh toán khi nhận hàng,Đang giao,Đã giao,Hủy',
+        ]);
+
+        $donHang->trang_thai = $request->input('trang_thai');
+        $donHang->save();
+
+        return redirect()->route('admin.donhang.index')->with('success', 'Cập nhật trạng thái thành công.');
+    }
 }

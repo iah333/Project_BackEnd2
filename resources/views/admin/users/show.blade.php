@@ -146,7 +146,7 @@
 
     <div class="profile-container">
         <div class="profile-header">
-            <img src="{{ asset('avatar/' . (auth()->user()->avatar ?? 'default.jpg')) }}">
+            <img src="{{ asset(auth()->user()->avatar ?? 'avatar/default.jpg') }}">
             <div class="profile-info">
                 <h2>{{ $user->name }}</h2>
                 <p><i class="fas fa-envelope"></i> Email: {{ $user->email }}</p>
