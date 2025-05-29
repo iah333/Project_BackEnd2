@@ -44,7 +44,10 @@
                             <h5 class="card-title product-title">{{ $sanPham->ten_san_pham }}</h5>
                             <p class="card-text text-accent fw-medium">{{ number_format($sanPham->gia, 0, ',', '.') }} VNĐ</p>
                             <p class="card-text text-muted">Danh mục: {{ $sanPham->danhMuc->ten_danh_muc ?? 'N/A' }}</p>
-                            <a href="{{ route('giohang.them', $sanPham->id) }}" class="btn btn-action w-100">Thêm vào giỏ</a>
+                            <form action="{{ route('giohang.them', $sanPham->id) }}" method="POST">
+                                @csrf
+                                <button type="submit" class="btn btn-action w-100">Thêm vào giỏ</button>
+                            </form>
                         </div>
                     </div>
                 </div>

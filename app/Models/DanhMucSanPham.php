@@ -17,4 +17,9 @@ class DanhMucSanPham extends Model
     {
         return $this->hasMany(SanPham::class, 'danhmuc_id', 'id');
     }
+
+    public function carouselImages()
+{
+    return $this->hasMany(CarouselImage::class, 'danh_muc_id', 'id');
+}
 }

@@ -16,7 +16,6 @@
                         <div class="card-body text-center py-5">
                             <i class="bi bi-cart-x-fill text-muted" style="font-size: 3rem;"></i>
                             <p class="mt-3 fs-5 text-muted">Bạn chưa có đơn hàng nào.</p>
-                            <a href="{{ route('san-pham.show') }}" class="btn btn-primary mt-2">Mua sắm ngay</a>
                         </div>
                     </div>
                 @else

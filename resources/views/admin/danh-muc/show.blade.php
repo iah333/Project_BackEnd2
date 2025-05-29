@@ -14,31 +14,40 @@
     </div>
 
     <!-- Carousel -->
-    <div class="container my-4">
-        <div class="carousel-wrapper rounded shadow-sm">
-            <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
-                <div class="carousel-inner">
+<div class="container my-4">
+    <div class="carousel-wrapper rounded shadow-sm">
+        <div id="productCarousel" class="carousel slide" data-bs-ride="carousel">
+            <div class="carousel-inner">
+                @if ($danhMuc->carouselImages->isNotEmpty())
+                    @foreach ($danhMuc->carouselImages as $index => $image)
+                        <div class="carousel-item {{ $index === 0 ? 'active' : '' }}">
+                            <img src="{{ asset('img/' . $image->image_path) }}" class="d-block w-100 carousel-image" alt="Ảnh carousel {{ $index + 1 }}">
+                        </div>
+                    @endforeach
+                @else
                     <div class="carousel-item active">
-                        <img src="{{ asset('img/banner_AiPsr_PC.png') }}" class="d-block w-100 carousel-image" alt="Sản phẩm 1">
+                        <img src="{{ asset('img/banner_iP16sr_PC.png') }}" class="d-block w-100 carousel-image" alt="Sản phẩm 1">
                     </div>
                     <div class="carousel-item">
-                        <img src="{{ asset('img/banner_Macbookair_M4-MN_PC.png') }}" class="d-block w-100 carousel-image" alt="Sản phẩm 2">
+                        <img src="{{ asset('img/banner_iPhone16pro_max.png') }}" class="d-block w-100 carousel-image" alt="Sản phẩm 2">
                     </div>
                     <div class="carousel-item">
-                        <img src="{{ asset('img/banner_AiPsr_PC.png') }}" class="d-block w-100 carousel-image" alt="Sản phẩm 3">
+                        <img src="{{ asset('img/banner_iphone15.png') }}" class="d-block w-100 carousel-image" alt="Sản phẩm 3">
                     </div>
-                </div>
-                <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
-                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Trước</span>
-                </button>
-                <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
-                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
-                    <span class="visually-hidden">Tiếp</span>
-                </button>
+                @endif
             </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#productCarousel" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Trước</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#productCarousel" data-bs-slide="next">
+                <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                <span class="visually-hidden">Tiếp</span>
+            </button>
         </div>
     </div>
+</div>
+
 
     <!-- Hiển thị danh mục và sản phẩm -->
     <div class="main-content">

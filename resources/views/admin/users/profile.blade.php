@@ -32,7 +32,7 @@
         <div class="bg-white p-4 rounded border shadow-sm mb-4">
             <h6 class="fs-6 fw-bold text-dark mb-3">Địa chỉ của bạn</h6>
             @if ($addresses->isEmpty())
-                <p class="text-muted">Bạn chưa thêm địa chỉ nào. <a href="{{ route('user.addresses') }}"
+                <p class="text-muted">Bạn chưa thêm địa chỉ nào. <a href="{{ route('dia-chi.index') }}"
                         class="text-accent">Thêm địa chỉ ngay</a></p>
             @else
                 <div class="list-group">

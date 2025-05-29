@@ -19,8 +19,6 @@ class DanhMucSeeder extends Seeder
             ['id'=> 2,'ten_danh_muc' => 'iPad'],
             ['id'=> 3,'ten_danh_muc' => 'Mac'],
             ['id'=> 4,'ten_danh_muc' => 'Watch'],
-            ['id'=> 5,'ten_danh_muc' => 'Phụ Kiện'],
-            ['id'=> 6,'ten_danh_muc' => 'Âm Thanh'],
         ];
 
         foreach ($danhMucs as $danhMuc) {

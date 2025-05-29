@@ -1,6 +1,6 @@
-
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -13,18 +13,22 @@
     <title>@yield('title', 'PhoneStore')</title>
 
     <style>
-        html, body {
+        html,
+        body {
             height: 100%;
             margin: 0;
         }
+
         body {
             display: flex;
             flex-direction: column;
             min-height: 100vh;
         }
+
         .main-content {
             flex: 1 0 auto;
         }
+
         footer {
             flex-shrink: 0;
             background-color: #343a40;
@@ -32,6 +36,7 @@
             padding: 20px 0;
             width: 100%;
         }
+
         .navbar-custom {
             background-color: #2c2c2e;
             /* Màu nền tối hơn, sang trọng */
@@ -42,10 +47,15 @@
             top: 0;
             z-index: 1000;
         }
+
         .navbar-custom .navbar-brand img {
-            height: 45px;
+            height: 55px;
+            
             transition: transform 0.3s ease;
+            margin-left: 70px;
+            /* đẩy logo sang phải */
         }
+
         .navbar-custom .nav-link {
             color: rgba(255, 255, 255, 0.7);
             font-weight: 500;
@@ -54,6 +64,7 @@
             border-radius: 5px;
             transition: all 0.3s ease;
         }
+
         .navbar-custom .nav-link:hover {
             color: #ffffff;
             background-color: #3a3a3c;
@@ -90,11 +101,13 @@
             box-shadow: none;
             color: #fff;
         }
+
         .search-form .btn {
             background-color: transparent;
             border: none;
             color: rgba(255, 255, 255, 0.6);
         }
+
         .search-form .btn:hover {
             color: rgba(255, 255, 255, 1);
         }
@@ -216,13 +229,14 @@
 <body>
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/">
-                <img src="{{ asset('images/logo.png') }}" alt="Logo PhoneStore">
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
+                <a class="navbar-brand ms-3" href="/">
+                <img src="{{ asset('img/logo.png') }}" alt="Logo PhoneStore">
+                </a>
                 <ul class="navbar-nav mx-auto">
                     @if (isset($danhMucs) && is_countable($danhMucs))
                         @foreach ($danhMucs as $danhMuc)
@@ -239,7 +253,8 @@
                     @endif
                 </ul>
                 <form class="search-form d-flex me-3" action="{{ route('san-pham.search') }}" method="GET">
-                    <input class="form-control me-2" type="search" name="search" placeholder="Tìm kiếm sản phẩm..." aria-label="Search">
+                    <input class="form-control me-2" type="search" name="search" placeholder="Tìm kiếm sản phẩm..."
+                        aria-label="Search">
                     <button class="btn" type="submit">
                         <i class="fas fa-search"></i>
                     </button>
@@ -272,8 +287,7 @@
                             <li><a class="dropdown-item" href="{{ route('logout') }}"
                                     onclick="event.preventDefault(); document.getElementById('logout-form').submit();"><i
                                         class="fas fa-sign-out-alt"></i> Đăng xuất</a>
-                                <form id="logout-form" action="{{ route('logout') }}" method="GET"
-                                    style="display: none;">
+                                <form id="logout-form" action="{{ route('logout') }}" method="GET" style="display: none;">
                                     @csrf
                                 </form>
                             </li>

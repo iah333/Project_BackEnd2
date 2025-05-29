@@ -142,7 +142,8 @@
                                         <h5 class="fs-6 fw-bold text-dark mb-3">Địa chỉ nhận hàng</h5>
                                         <div class="mb-3">
                                             <label for="dia_chi_id" class="form-label text-muted">Chọn địa chỉ</label>
-                                            <select name="dia_chi_id" id="dia_chi_id" class="form-control border-accent" required>
+                                            <select name="dia_chi_id" id="dia_chi_id" class="form-control border-accent"
+                                                required>
                                                 <option value="">Chọn địa chỉ</option>
                                                 @foreach ($diaChis as $diaChi)
                                                     <option value="{{ $diaChi->id }}">
@@ -163,7 +164,8 @@
                                     <div class="bg-white p-4 rounded border">
                                         <h5 class="fs-6 fw-bold text-dark mb-3">Tổng thanh toán</h5>
                                         <p class="text-muted mb-4"><strong>Tổng tiền:</strong> <span id="modalTongTien"
-                                                class="text-accent fw-medium">{{ number_format($tongGia, 0, ',', '.') }} VNĐ</span>
+                                                class="text-accent fw-medium">{{ number_format($tongGia, 0, ',', '.') }}
+                                                VNĐ</span>
                                         </p>
                                         <input type="hidden" name="tong_tien" id="hiddenTongTien" value="{{ $tongGia }}">
                                         <button type="submit" class="btn btn-action w-100 py-2">Xác nhận đặt hàng</button>
@@ -253,7 +255,7 @@
                 @foreach ($cartItems as $item)
                     '{{ $item->id }}': {{ $item->gia }},
                 @endforeach
-            };
+                };
 
             // Cập nhật số lượng và tổng tiền
             function updateQuantity(maSanPham, gia, change) {
@@ -266,7 +268,7 @@
                 const tong = gia * soLuong;
                 document.getElementById('total-' + maSanPham).textContent = new Intl.NumberFormat('vi-VN').format(tong) + ' VNĐ';
 
-                // Cập nhật tổng số lượng và tổng giá
+                // Cập nhật tổng số lượng và tổng giá dựa trên các sản phẩm được chọn
                 updateTotals();
 
                 // Gửi yêu cầu AJAX để cập nhật số lượng trong backend
@@ -282,10 +284,7 @@
                     .then(data => {
                         if (data.success) {
                             console.log('Cập nhật số lượng thành công');
-                            document.getElementById('tongSoLuong').textContent = data.tongSoLuong;
-                            document.getElementById('tongGia').textContent = new Intl.NumberFormat('vi-VN').format(data.tongGia) + ' VNĐ';
-                            document.getElementById('modalTongTien').textContent = new Intl.NumberFormat('vi-VN').format(data.tongGia) + ' VNĐ';
-                            document.getElementById('hiddenTongTien').value = data.tongGia;
+                            updateTotals(); // Cập nhật lại tổng sau khi backend trả về
                         } else {
                             alert('Lỗi: ' + (data.message || 'Không xác định'));
                             quantityInput.value = data.so_luong || soLuong;
@@ -314,10 +313,7 @@
                     .then(data => {
                         if (data.success) {
                             document.querySelector(`[data-product-id="${maSanPham}"]`).remove();
-                            document.getElementById('tongSoLuong').textContent = data.tongSoLuong;
-                            document.getElementById('tongGia').textContent = new Intl.NumberFormat('vi-VN').format(data.tongGia) + ' VNĐ';
-                            document.getElementById('modalTongTien').textContent = new Intl.NumberFormat('vi-VN').format(data.tongGia) + ' VNĐ';
-                            document.getElementById('hiddenTongTien').value = data.tongGia;
+                            updateTotals(); // Cập nhật lại tổng
                             updateCheckoutButton();
                             alert(data.message);
                             if (data.tongSoLuong === 0) {
@@ -357,10 +353,7 @@
                             selectedItems.forEach(id => {
                                 document.querySelector(`[data-product-id="${id}"]`).remove();
                             });
-                            document.getElementById('tongSoLuong').textContent = data.tongSoLuong;
-                            document.getElementById('tongGia').textContent = new Intl.NumberFormat('vi-VN').format(data.tongGia) + ' VNĐ';
-                            document.getElementById('modalTongTien').textContent = new Intl.NumberFormat('vi-VN').format(data.tongGia) + ' VNĐ';
-                            document.getElementById('hiddenTongTien').value = data.tongGia;
+                            updateTotals(); // Cập nhật lại tổng
                             document.getElementById('selectAllBottom').checked = false;
                             updateCheckoutButton();
                             alert(data.message);
@@ -377,14 +370,16 @@
                     });
             }
 
-            // Hàm tính tổng số lượng và tổng giá
+            // Hàm tính tổng số lượng và tổng giá cho các sản phẩm được chọn
+            let selectedItemsCache = [];
             function updateTotals() {
                 let tongSoLuong = 0;
                 let tongGia = 0;
 
-                document.querySelectorAll('input[id^="quantity-"]').forEach(input => {
-                    const soLuongItem = parseInt(input.value) || 0;
-                    const maSanPhamItem = input.id.split('-')[1];
+                selectedItemsCache = Array.from(document.querySelectorAll('.item-checkbox:checked')).map(checkbox => checkbox.value);
+                selectedItemsCache.forEach(maSanPhamItem => {
+                    const quantityInput = document.getElementById('quantity-' + maSanPhamItem);
+                    const soLuongItem = parseInt(quantityInput.value) || 0;
                     const giaItem = prices[maSanPhamItem] || 0;
                     tongSoLuong += soLuongItem;
                     tongGia += giaItem * soLuongItem;
@@ -418,16 +413,12 @@
                 deleteButton.disabled = !anyChecked;
 
                 // Cập nhật tổng tiền trong modal khi checkbox thay đổi
-                updateModalTotal();
+                updateTotals();
             }
 
-            // Cập nhật tổng tiền trong modal
+            // Cập nhật tổng tiền trong modal (gọi lại updateTotals để đồng bộ)
             function updateModalTotal() {
-                const { tongGia } = updateTotals();
-                const modalTongTien = document.getElementById('modalTongTien');
-                const hiddenTongTien = document.getElementById('hiddenTongTien');
-                modalTongTien.textContent = new Intl.NumberFormat('vi-VN').format(tongGia) + ' VNĐ';
-                hiddenTongTien.value = tongGia;
+                updateTotals();
             }
 
             // Khởi tạo trạng thái ban đầu

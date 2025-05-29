@@ -40,17 +40,6 @@
                 <div class="main-image mb-3">
                     <img id="mainImage" src="{{ asset($sanPham->anh) }}" class="img-fluid" alt="{{ $sanPham->ten_san_pham }}" style="max-height: 500px; width: 100%; object-fit: contain;">
                 </div>
-                <!-- Các ảnh nhỏ -->
-                <div class="thumbnail-images d-flex justify-content-between">
-                    @for ($i = 1; $i <= 5; $i++)
-                        @php
-                            $ext = pathinfo($sanPham->anh, PATHINFO_EXTENSION);
-                            $basePath = str_replace('.' . $ext, '', $sanPham->anh);
-                            $thumbnailPath = $basePath . "-$i.$ext";
-                        @endphp
-                        <img src="{{ asset($thumbnailPath) }}" class="thumbnail img-fluid" alt="{{ $sanPham->ten_san_pham }} thumbnail {{ $i }}" style="width: 80px; height: 80px; object-fit: cover; cursor: pointer;" onclick="changeMainImage('{{ asset($thumbnailPath) }}')">
-                    @endfor
-                </div>
             </div>
 
             <!-- Thông tin sản phẩm -->

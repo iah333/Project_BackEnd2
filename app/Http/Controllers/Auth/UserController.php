@@ -8,6 +8,7 @@ use App\Models\GioHang;
 use Illuminate\Http\Request;
 use App\Models\GioHangSanPham;
 use App\Http\Controllers\Controller;
+use App\Models\ThanhPho; 
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
@@ -157,6 +158,7 @@ class UserController extends Controller
         $user = Auth::user();
         $addresses = DiaChi::where('user_id', Auth::id())->get();
         $gioHang = GioHang::where('user_id', Auth::id())->first();
+        $thanhPhos = ThanhPho::all(); // Thêm danh sách thành phố
 
         $cartItems = $gioHang ? $gioHang->sanPhams()->get() : collect([]);
         $tongSoLuong = $cartItems->sum(function ($item) {

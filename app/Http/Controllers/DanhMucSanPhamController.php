@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\DanhMucSanPhamRequest;
 use App\Models\DanhMucSanPham;
-use Illuminate\Http\Request;
 
 class DanhMucSanPhamController extends Controller
 {
@@ -18,12 +18,8 @@ class DanhMucSanPhamController extends Controller
         return view('admin.danh-muc.create');
     }
 
-    public function store(Request $request)
+    public function store(DanhMucSanPhamRequest $request)
     {
-        $request->validate([
-            'ten_danh_muc' => 'required|string|max:255',
-        ]);
-
         DanhMucSanPham::create([
             'ten_danh_muc' => $request->ten_danh_muc,
         ]);
@@ -31,19 +27,15 @@ class DanhMucSanPhamController extends Controller
         return redirect()->route('danhMuc.index')->with('success', 'Danh mục đã được tạo!');
     }
 
-    public function edit($ma_danh_muc)
+    public function edit($id)
     {
-        $danhMuc = DanhMucSanPham::findOrFail($ma_danh_muc);
+        $danhMuc = DanhMucSanPham::findOrFail($id);
         return view('admin.danh-muc.edit', compact('danhMuc'));
     }
 
-    public function update(Request $request, $ma_danh_muc)
+    public function update(DanhMucSanPhamRequest $request, $id)
     {
-        $request->validate([
-            'ten_danh_muc' => 'required|string|max:255',
-        ]);
-
-        $danhMuc = DanhMucSanPham::findOrFail($ma_danh_muc);
+        $danhMuc = DanhMucSanPham::findOrFail($id);
         $danhMuc->update([
             'ten_danh_muc' => $request->ten_danh_muc,
         ]);
@@ -51,17 +43,24 @@ class DanhMucSanPhamController extends Controller
         return redirect()->route('danhMuc.index')->with('success', 'Danh mục đã được cập nhật!');
     }
 
-    public function destroy($ma_danh_muc)
+    public function destroy($id)
     {
-        $danhMuc = DanhMucSanPham::findOrFail($ma_danh_muc);
+        $danhMuc = DanhMucSanPham::findOrFail($id);
         $danhMuc->delete();
 
         return redirect()->route('danhMuc.index')->with('success', 'Danh mục đã được xóa!');
     }
+
     public function showBySlug($slug)
     {
         $danhMuc = DanhMucSanPham::where('ten_danh_muc', $slug)->with('sanPhams')->firstOrFail();
         $danhMucs = DanhMucSanPham::all();
         return view('admin.danh-muc.show', compact('danhMuc', 'danhMucs'));
+    }
+    public function show($id)
+    {
+        $danhMuc = DanhMucSanPham::with('carouselImages')->findOrFail($id);
+
+        return view('admin.danhmuc.show', compact('danhMuc'));
     }
 }
