@@ -70,6 +70,19 @@
                                     <a href="{{ route('register.form') }}"
                                         class="text-decoration-none text-primary small">Đăng ký tài khoản mới</a>
                                 </div>
+                                <!-- Social Login -->
+                                <div class="text-center mt-4">
+                                    <p class="mb-3">Hoặc đăng nhập bằng</p>
+
+                                    <a href="{{ url('/auth/google') }}" class="btn btn-outline-danger w-100 mb-2">
+                                        <i class="fab fa-google me-2"></i> Đăng nhập với Google
+                                    </a>
+
+                                    <a href="{{ url('/auth/facebook') }}" class="btn btn-outline-primary w-100">
+                                        <i class="fab fa-facebook-f me-2"></i> Đăng nhập với Facebook
+                                    </a>
+                                </div>
+
                             </form>
                             <!-- Thông báo từ session -->
                             @if (session('msg'))

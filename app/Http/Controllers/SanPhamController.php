@@ -15,7 +15,52 @@ class SanPhamController extends Controller
         $sanPhams = SanPham::with('danhMuc')->get();
         return view('admin.san-pham.index', compact('sanPhams'));
     }
+    // Xử lý tìm kiếm cho người dùng
+    public function search(Request $request)
+    {
+        try {
+            $search = $request->query('search');
+            $ma_danh_muc = $request->query('ma_danh_muc');
 
+            // Lấy tất cả danh mục để hiển thị trong menu
+            $danhMucs = DanhMucSanPham::all();
+
+            // Query sản phẩm
+            $query = SanPham::query();
+
+            // Nếu có từ khóa tìm kiếm
+            if ($search) {
+                $query->where('ten_san_pham', 'LIKE', "%{$search}%");
+            }
+
+            // Nếu có danh mục được chọn
+            if ($ma_danh_muc) {
+                $query->where('danhmuc_id', $ma_danh_muc);
+                session(['current_category' => $ma_danh_muc]);
+            } else {
+                // Nếu có tìm kiếm, lấy danh mục của sản phẩm đầu tiên tìm thấy
+                if ($search) {
+                    $firstProduct = $query->first();
+                    if ($firstProduct && $firstProduct->danhmuc_id) {
+                        $ma_danh_muc = $firstProduct->danhmuc_id;
+                        session(['current_category' => $ma_danh_muc]);
+                    }
+                }
+            }
+
+            // Lấy danh sách sản phẩm với phân trang
+            $sanPhams = $query->with('danhMuc')->paginate(12);
+
+            // Lấy thông tin giỏ hàng để hiển thị số lượng
+            $tongSoLuong = session('tongSoLuong', 0);
+
+            return view('san-pham.index', compact('sanPhams', 'danhMucs', 'tongSoLuong', 'ma_danh_muc', 'search'))
+                ->with('success', session('success'));
+        } catch (\Exception $e) {
+            Log::error('Lỗi khi tìm kiếm sản phẩm: ' . $e->getMessage());
+            return redirect()->back()->with('error', 'Không thể tìm kiếm sản phẩm.');
+        }
+    }
     public function create()
     {
         $danhMucs = DanhMucSanPham::all();
@@ -67,12 +112,11 @@ class SanPhamController extends Controller
         $danhMucs = DanhMucSanPham::all();
 
         if (Auth::check() && Auth::user()->is_admin) {
-            \Log::info('User is admin, showing admin view');
+
             return view('admin.san-pham.show', compact('sanPham', 'danhMucs'));
         }
 
-        \Log::info('User is not admin, showing chi-tiet view');
-        return view('san-pham.chi-tiet', compact('sanPham'));
+        return view('san-pham.chi-tiet', compact('sanPham', 'danhMucs'));
     }
 
     public function edit($id)

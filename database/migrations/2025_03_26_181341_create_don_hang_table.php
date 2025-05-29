@@ -14,7 +14,7 @@ return new class extends Migration
             $table->string('ten_nguoi_nhan')->nullable();
             $table->string('so_dien_thoai')->nullable();
             $table->dateTime('ngay_dat');
-            $table->decimal('tong_tien', 10, 2);
+            $table->decimal('tong_tien', 15, 2);
             $table->string('trang_thai')->default('chờ xử lý');
             $table->timestamps();
 

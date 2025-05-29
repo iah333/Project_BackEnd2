@@ -1,9 +1,10 @@
+
 <!DOCTYPE html>
 <html lang="vi">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
         integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
@@ -12,7 +13,25 @@
     <title>@yield('title', 'PhoneStore')</title>
 
     <style>
-        /* Navbar */
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .main-content {
+            flex: 1 0 auto;
+        }
+        footer {
+            flex-shrink: 0;
+            background-color: #343a40;
+            color: white;
+            padding: 20px 0;
+            width: 100%;
+        }
         .navbar-custom {
             background-color: #2c2c2e;
             /* Màu nền tối hơn, sang trọng */
@@ -23,16 +42,10 @@
             top: 0;
             z-index: 1000;
         }
-
         .navbar-custom .navbar-brand img {
             height: 45px;
             transition: transform 0.3s ease;
         }
-
-        .navbar-custom .navbar-brand:hover img {
-            transform: scale(1.1);
-        }
-
         .navbar-custom .nav-link {
             color: rgba(255, 255, 255, 0.7);
             font-weight: 500;
@@ -41,7 +54,6 @@
             border-radius: 5px;
             transition: all 0.3s ease;
         }
-
         .navbar-custom .nav-link:hover {
             color: #ffffff;
             background-color: #3a3a3c;
@@ -64,11 +76,9 @@
 
         .search-form .form-control {
             background-color: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: none;
             color: #fff;
-            border-radius: 20px;
-            padding: 8px 40px 8px 15px;
-            font-size: 0.9rem;
+            font-size: 0.875rem;
         }
 
         .search-form .form-control::placeholder {
@@ -76,23 +86,17 @@
         }
 
         .search-form .form-control:focus {
-            background-color: rgba(255, 255, 255, 0.15);
-            box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-            border-color: #007bff;
+            background-color: rgba(255, 255, 255, 0.2);
+            box-shadow: none;
+            color: #fff;
         }
-
         .search-form .btn {
-            position: absolute;
-            right: 5px;
-            top: 50%;
-            transform: translateY(-50%);
-            background: transparent;
+            background-color: transparent;
             border: none;
-            color: rgba(255, 255, 255, 0.7);
+            color: rgba(255, 255, 255, 0.6);
         }
-
         .search-form .btn:hover {
-            color: #ffffff;
+            color: rgba(255, 255, 255, 1);
         }
 
         /* Dropdown */
@@ -215,8 +219,7 @@
             <a class="navbar-brand" href="/">
                 <img src="{{ asset('images/logo.png') }}" alt="Logo PhoneStore">
             </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
@@ -235,9 +238,8 @@
                         </li>
                     @endif
                 </ul>
-                <form class="search-form d-flex me-3" action="{{ route('sanPham.index') }}" method="GET">
-                    <input class="form-control me-2" type="search" name="search" placeholder="Tìm kiếm sản phẩm..."
-                        aria-label="Search">
+                <form class="search-form d-flex me-3" action="{{ route('san-pham.search') }}" method="GET">
+                    <input class="form-control me-2" type="search" name="search" placeholder="Tìm kiếm sản phẩm..." aria-label="Search">
                     <button class="btn" type="submit">
                         <i class="fas fa-search"></i>
                     </button>
@@ -282,7 +284,9 @@
         </div>
     </nav>
 
-    @yield('content')
+    <div class="main-content">
+        @yield('content')
+    </div>
 
     <footer class="bg-dark text-white py-4">
         <div class="container">

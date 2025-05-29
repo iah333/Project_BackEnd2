@@ -30,3 +30,10 @@
 .thumbnail:hover {
     border-color: #007bff;
 }
+footer {
+    flex-shrink: 0 !important;
+    background-color: #343a40 !important;
+    color: white !important;
+    padding: 20px 0 !important;
+    width: 100% !important;
+}

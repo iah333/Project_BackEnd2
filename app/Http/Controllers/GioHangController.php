@@ -6,6 +6,7 @@ use App\Models\GioHang;
 use App\Models\GioHangSanPham;
 use App\Models\SanPham;
 use App\Models\DiaChi;
+use App\Models\DanhMucSanPham;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
@@ -43,9 +44,8 @@ class GioHangController extends Controller
     public function update(Request $request, $id)
     {
         try {
-
             if (!Auth::check()) {
-                return redirect()->back()->with('error', 'Vui lòng đăng nhập để cập nhật giỏ hàng.');
+                return response()->json(['success' => false, 'message' => 'Vui lòng đăng nhập để cập nhật giỏ hàng.'], 401);
             }
 
             $gioHang = GioHang::where('user_id', Auth::id())->firstOrFail();
@@ -53,7 +53,7 @@ class GioHangController extends Controller
             $soLuong = $request->input('so_luong');
 
             if (!is_numeric($soLuong) || $soLuong < 1) {
-                return redirect()->back()->with('error', 'Số lượng không hợp lệ, phải lớn hơn 0.');
+                return response()->json(['success' => false, 'message' => 'Số lượng không hợp lệ, phải lớn hơn 0.'], 400);
             }
 
             $sanPham = SanPham::findOrFail($id);
@@ -64,7 +64,7 @@ class GioHangController extends Controller
             if ($currentQuantity) {
                 $newTotal = $currentQuantity->so_luong + ($soLuong - $currentQuantity->so_luong);
                 if ($newTotal > $soLuongTon) {
-                    return redirect()->back()->with('error', 'Số lượng cập nhật vượt quá số lượng tồn (' . $soLuongTon . ').');
+                    return response()->json(['success' => false, 'message' => 'Số lượng cập nhật vượt quá số lượng tồn (' . $soLuongTon . ').', 'so_luong' => $currentQuantity->so_luong], 400);
                 }
             }
 
@@ -78,13 +78,15 @@ class GioHangController extends Controller
                 return $item->gia * $item->pivot->so_luong;
             });
 
-            return redirect()->route('gioHang.index') // Sửa từ 'show' thành 'index'
-                ->with('success', 'Cập nhật số lượng thành công!')
-                ->with('tongSoLuong', $tongSoLuong)
-                ->with('tongGia', $tongGia);
+            return response()->json([
+                'success' => true,
+                'message' => 'Cập nhật số lượng thành công!',
+                'tongSoLuong' => $tongSoLuong,
+                'tongGia' => $tongGia
+            ]);
         } catch (\Exception $e) {
             Log::error('Lỗi khi cập nhật số lượng: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Không thể cập nhật số lượng.');
+            return response()->json(['success' => false, 'message' => 'Không thể cập nhật số lượng.'], 500);
         }
     }
 
@@ -103,13 +105,49 @@ class GioHangController extends Controller
                 return $item->gia * $item->pivot->so_luong;
             });
 
-            return redirect()->route('gioHang.index') // Sửa từ 'show' thành 'index'
-                ->with('success', 'Xóa sản phẩm khỏi giỏ hàng thành công!')
-                ->with('tongSoLuong', $tongSoLuong)
-                ->with('tongGia', $tongGia);
+            return response()->json([
+                'success' => true,
+                'message' => 'Xóa sản phẩm khỏi giỏ hàng thành công!',
+                'tongSoLuong' => $tongSoLuong,
+                'tongGia' => $tongGia
+            ]);
         } catch (\Exception $e) {
             Log::error('Lỗi khi xóa sản phẩm: ' . $e->getMessage());
-            return redirect()->back()->with('error', 'Không thể xóa sản phẩm khỏi giỏ hàng.');
+            return response()->json(['success' => false, 'message' => 'Không thể xóa sản phẩm khỏi giỏ hàng.'], 500);
+        }
+    }
+
+    public function removeMultiple(Request $request)
+    {
+        try {
+            $gioHang = GioHang::where('user_id', Auth::id())->firstOrFail();
+            $selectedItems = $request->input('selectedItems', []);
+
+            if (empty($selectedItems)) {
+                return response()->json(['success' => false, 'message' => 'Không có sản phẩm nào được chọn để xóa.'], 400);
+            }
+
+            GioHangSanPham::where('giohang_id', $gioHang->id)
+                ->whereIn('sanpham_id', $selectedItems)
+                ->delete();
+
+            $cartItems = $gioHang->sanPhams()->get();
+            $tongSoLuong = $cartItems->sum(function ($item) {
+                return $item->pivot->so_luong;
+            });
+            $tongGia = $cartItems->sum(function ($item) {
+                return $item->gia * $item->pivot->so_luong;
+            });
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Xóa các sản phẩm được chọn thành công!',
+                'tongSoLuong' => $tongSoLuong,
+                'tongGia' => $tongGia
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Lỗi khi xóa nhiều sản phẩm: ' . $e->getMessage());
+            return response()->json(['success' => false, 'message' => 'Không thể xóa các sản phẩm được chọn.'], 500);
         }
     }
 
@@ -139,3 +177,4 @@ class GioHangController extends Controller
             ->with('message', $message ?? null);
     }
 }
+?>
