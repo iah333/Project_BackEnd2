@@ -57,6 +57,7 @@ class DatabaseSeeder extends Seeder
             DanhMucSeeder::class,
             SanPhamSeeder::class,   
             CarouselImagesSeeder::class,
+            // ImportDiaChiSeeder::class,
         ]);
     }
 }

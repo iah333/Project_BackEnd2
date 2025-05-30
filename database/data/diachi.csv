@@ -1,0 +1,30 @@
+thanh_pho_id,ten_thanh_pho,quan_huyen_id,ten_quan_huyen,phuong_xa_id,ten_phuong_xa
+1,Hà Nội,1,Ba Đình,1,Phường Trúc Bạch
+1,Hà Nội,1,Ba Đình,2,Phường Nguyễn Trung Trực
+1,Hà Nội,1,Ba Đình,3,Phường Quán Thánh
+1,Hà Nội,2,Hoàn Kiếm,4,Phường Hàng Trống
+1,Hà Nội,2,Hoàn Kiếm,5,Phường Hàng Bạc
+1,Hà Nội,2,Hoàn Kiếm,6,Phường Hàng Đào
+1,Hà Nội,3,Đống Đa,7,Phường Ô Chợ Dừa
+1,Hà Nội,3,Đống Đa,8,Phường Láng Thượng
+1,Hà Nội,4,Cầu Giấy,9,Phường Nghĩa Đô
+1,Hà Nội,4,Cầu Giấy,10,Phường Dịch Vọng
+2,TP. Hồ Chí Minh,5,Quận 1,11,Phường Bến Nghé
+2,TP. Hồ Chí Minh,5,Quận 1,12,Phường Bến Thành
+2,TP. Hồ Chí Minh,5,Quận 1,13,Phường Nguyễn Thái Bình
+2,TP. Hồ Chí Minh,6,Quận 3,14,Phường 3
+2,TP. Hồ Chí Minh,6,Quận 3,15,Phường 5
+2,TP. Hồ Chí Minh,7,Quận 7,16,Phường Tân Phú
+2,TP. Hồ Chí Minh,7,Quận 7,17,Phường Tân Thuận Đông
+3,Đà Nẵng,8,Hải Châu,18,Phường Thanh Bình
+3,Đà Nẵng,8,Hải Châu,19,Phường Hòa Thuận Đông
+3,Đà Nẵng,9,Thanh Khê,20,Phường An Khê
+3,Đà Nẵng,9,Thanh Khê,21,Phường Chính Gián
+4,Cần Thơ,10,Ninh Kiều,22,Phường Cái Khế
+4,Cần Thơ,10,Ninh Kiều,23,Phường An Nghiệp
+4,Cần Thơ,11,Bình Thủy,24,Phường Bình Thủy
+4,Cần Thơ,11,Bình Thủy,25,Phường Trà Nóc
+5,Hải Phòng,12,Hồng Bàng,26,Phường Hạ Lý
+5,Hải Phòng,12,Hồng Bàng,27,Phường Thượng Lý
+5,Hải Phòng,13,Ngô Quyền,28,Phường Máy Tơ
+5,Hải Phòng,13,Ngô Quyền,29,Phường Cầu Tre
