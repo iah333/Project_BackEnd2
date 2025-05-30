@@ -74,6 +74,10 @@ Route::prefix('admin')->middleware(['auth'])->name('admin.')->group(function () 
     Route::post('check/donhang/{id}/cap-nhat-trang-thai', [DonHangController::class, 'updateStatus'])->name('donhang.updateStatus');
 });
 
+// Đổi mật khẩu
+Route::get('change/password', [LoginController::class, 'showChangePassword'])->name('change.form');
+Route::post('change-password', [LoginController::class, 'changePassword'])->name('change.password');
+
 Route::middleware(['auth'])->group(function () {
     Route::get('/user/profile', [UserController::class, 'profile'])->name('users.profile');
     Route::get('/profile/edit', [UserController::class, 'editUser'])->name('profile.editU');

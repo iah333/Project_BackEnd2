@@ -141,7 +141,6 @@
         }
     </style>
 
-    <!-- Thêm SweetAlert2 -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <div class="profile-container">
@@ -166,6 +165,9 @@
         <div class="btn-group">
             <a href="{{ route('admin.users.edit', $user->id) }}" class="btn-custom btn-edit">
                 <i class="fas fa-edit"></i> Chỉnh sửa
+            </a>
+            <a href="{{ route('change.form', $user->id) }}" class="btn-custom btn-edit">
+                <i class="fas fa-key"></i> Đổi mật khẩu
             </a>
             <a href="{{ route('admin.users.index') }}" class="btn-custom btn-back">
                 <i class="fas fa-arrow-left"></i> Quay lại

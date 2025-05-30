@@ -63,4 +63,56 @@ class LoginController extends Controller
         // Khi users bấm đăng xuất trả về trang chủ
         return Redirect('/');
     }
+    // Kiểm tra quyền để có thể đổi mật khẩu
+    private function hasPermissionToChangePassword($currentUser, $targetUser)
+    {
+        // Superadmin có quyền đổi mật khẩu của bất kỳ ai
+        if ($currentUser->is_superadmin) {
+            return true;
+        }
+
+        // Admin chỉ có thể đổi mật khẩu của chính mình hoặc user không phải admin
+        if ($currentUser->is_admin && !$currentUser->is_superadmin) {
+            return $currentUser->id === $targetUser->id || !$targetUser->is_admin;
+        }
+
+        // User chỉ có thể đổi mật khẩu của chính mình
+        return $currentUser->id === $targetUser->id;
+    }
+    public function changePassword(Request $request)
+    {
+        // Xác thực dữ liệu đầu vào
+        $request->validate([
+            'user_id' => 'required|exists:users,id', // ID của user cần đổi mật khẩu
+            'old_password' => 'required|string', // Mật khẩu cũ
+            'new_password' => 'required|string|min:6|confirmed', // Mật khẩu mới và xác nhận
+        ]);
+
+        // Lấy user hiện tại và user cần đổi mật khẩu
+        $currentUser = Auth::user();
+        $targetUser = User::find($request->user_id);
+
+        // Kiểm tra quyền hạn
+        if (!$this->hasPermissionToChangePassword($currentUser, $targetUser)) {
+            return back()->with('error', 'Bạn không có quyền đổi mật khẩu cho người dùng này.');
+        }
+
+        // Kiểm tra mật khẩu cũ
+        if (!Hash::check($request->old_password, $targetUser->password)) {
+            return back()->with('error', 'Mật khẩu cũ không chính xác.');
+        }
+
+        // Cập nhật mật khẩu mới
+        $targetUser->password = Hash::make($request->new_password);
+        $targetUser->save();
+
+        // Thông báo thành công
+        return back()->with('success', 'Đổi mật khẩu thành công!');
+    }
+    public function showChangePassword()
+    {
+        $user = Auth::user();
+        return view($user->is_admin || $user->super_admin ? 'admin.users.change-password'
+            : 'admin.users.user-change-password');
+    }
 }

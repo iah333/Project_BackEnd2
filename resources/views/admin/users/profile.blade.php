@@ -24,6 +24,9 @@
                 <div class="col-md-6">
                     <a href="{{ route('profile.editU', $user->id) }}" class="btn btn-primary mb-3">Chỉnh sửa hồ
                         sơ</a>
+                    <a href="{{ route('change.form', $user->id) }}" class="btn btn-primary mb-3">
+                        <i class="fas fa-key"></i> Đổi mật khẩu
+                    </a>
                 </div>
             </div>
         </div>
