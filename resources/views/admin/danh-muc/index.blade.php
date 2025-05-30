@@ -19,7 +19,7 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($danhMucs as $danhMuc)
+                @forelse ($danhMucs as $danhMuc)
                     <tr>
                         <td>{{ $danhMuc->id }}</td>
                         <td>{{ $danhMuc->ten_danh_muc }}</td>
@@ -28,11 +28,16 @@
                             <form action="{{ route('danhMuc.destroy', $danhMuc->id) }}" method="POST" style="display:inline;">
                                 @csrf
                                 @method('DELETE')
-                                <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('Bạn có chắc muốn xóa?')">Xóa</button>
+                                <button type="submit" class="btn btn-sm btn-danger" 
+                                        onclick="return confirm('Bạn có muốn xóa danh mục \'' + '{{ $danhMuc->ten_danh_muc }}' + '\' không?')">Xóa</button>
                             </form>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="3" class="text-center">Không có danh mục nào.</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>

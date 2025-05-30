@@ -157,7 +157,7 @@ class UserController extends Controller
         $user = Auth::user();
         $addresses = DiaChi::where('user_id', Auth::id())->get();
         $gioHang = GioHang::where('user_id', Auth::id())->first();
-        $thanhPhos = ThanhPho::all(); // Thêm danh sách thành phố
+        $thanhPhos = ThanhPho::all(); 
 
         $cartItems = $gioHang ? $gioHang->sanPhams()->get() : collect([]);
         $tongSoLuong = $cartItems->sum(function ($item) {
@@ -167,7 +167,7 @@ class UserController extends Controller
             return $item->gia * $item->pivot->so_luong;
         });
 
-        return view('admin.users.profile', compact('user', 'addresses', 'cartItems', 'tongSoLuong', 'tongGia'));
+        return view('admin.users.profile', compact('user', 'addresses', 'cartItems', 'tongSoLuong', 'tongGia','thanhPhos'));
     }
 
     /**

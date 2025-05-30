@@ -235,7 +235,7 @@
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <a class="navbar-brand ms-3" href="/">
-                <img src="{{ asset('img/logo.png') }}" alt="">
+                <img src="{{ asset('img/logo.png') }}" alt="Logo PhoneStore">
                 </a>
                 <ul class="navbar-nav mx-auto">
                     @if (isset($danhMucs) && is_countable($danhMucs))
@@ -248,7 +248,7 @@
                         @endforeach
                     @else
                         <li class="nav-item">
-                            <span class="nav-link">Không có danh mục</span>
+                            
                         </li>
                     @endif
                 </ul>

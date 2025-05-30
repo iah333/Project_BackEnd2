@@ -38,7 +38,7 @@
         @else
             @foreach ($sanPhams as $sanPham)
                 <div class="col-md-4 mb-5">
-                    <div class="card h-100 product-card shadow-sm">
+                    <div class="card h-300 product-card shadow-sm ">
                         <img src="{{ asset($sanPham->anh) }}" class="card-img-top product-image" alt="{{ $sanPham->ten_san_pham }}">
                         <div class="card-body">
                             <h5 class="card-title product-title">{{ $sanPham->ten_san_pham }}</h5>

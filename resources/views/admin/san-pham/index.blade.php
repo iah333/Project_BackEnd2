@@ -14,6 +14,7 @@
             <thead>
                 <tr>
                     <th>ID</th>
+                    <th>Ảnh sản phẩm</th>
                     <th>Tên sản phẩm</th>
                     <th>Giá</th>
                     <th>Số lượng tồn</th>
@@ -22,9 +23,20 @@
                 </tr>
             </thead>
             <tbody>
-                @foreach ($sanPhams as $sanPham)
+                @forelse ($sanPhams as $sanPham)
                     <tr>
                         <td>{{ $sanPham->id }}</td>
+                        <td>
+                            @if ($sanPham->anh)
+                                <!-- Loại bỏ phần "img/" thừa nếu có trong $sanPham->anh -->
+                                @php
+                                    $imagePath = str_replace('img/', '', $sanPham->anh); // Loại bỏ "img/" nếu có
+                                @endphp
+                                <img src="{{ asset('img/' . $imagePath) }}" alt="{{ $sanPham->ten_san_pham }}" style="width: 50px; height: auto;">
+                            @else
+                                <span>Không có ảnh</span>
+                            @endif
+                        </td>
                         <td>{{ $sanPham->ten_san_pham }}</td>
                         <td>{{ $sanPham->gia }}</td>
                         <td>{{ $sanPham->so_luong_ton }}</td>
@@ -38,7 +50,11 @@
                             </form>
                         </td>
                     </tr>
-                @endforeach
+                @empty
+                    <tr>
+                        <td colspan="7" class="text-center">Không có sản phẩm nào.</td>
+                    </tr>
+                @endforelse
             </tbody>
         </table>
     </div>

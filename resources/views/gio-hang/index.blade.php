@@ -1,4 +1,4 @@
-@extends('layouts.app')
+@extends('layouts.appsub')
 
 @section('title', 'Giỏ hàng - PhoneStore')
 

@@ -14,7 +14,8 @@ class DiaChiController extends Controller
     public function index()
     {
         $diaChis = Auth::user()->diaChis()->with(['thanhPho', 'quanHuyen', 'phuongXa'])->get();
-        return view('dia-chi.index', compact('diaChis'));
+        $thanhPhos = ThanhPho::all(); 
+        return view('dia-chi.index', compact('diaChis','thanhPhos'));
     }
 
     public function create()
