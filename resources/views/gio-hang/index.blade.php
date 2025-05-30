@@ -85,8 +85,10 @@
                                 <div class="d-inline-flex align-items-center quantity-control">
                                     <button type="button" class="btn btn-sm btn-outline-secondary"
                                         onclick="updateQuantity({{ $item->id }}, {{ $item->gia }}, -1)">-</button>
+
                                     <input type="number" id="quantity-{{ $item->id }}" value="{{ $item->pivot->so_luong }}" min="1"
                                         class="form-control w-50 text-center mx-2" readonly>
+                                        
                                     <button type="button" class="btn btn-sm btn-outline-secondary"
                                         onclick="updateQuantity({{ $item->id }}, {{ $item->gia }}, 1)">+</button>
                                 </div>

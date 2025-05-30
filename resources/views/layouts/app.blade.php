@@ -306,7 +306,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <h5>Công ty TNHH Hai Thằng Bạn</h5>
+                    <h5>Công ty TNHH TaoGreen</h5>
                     <p>Địa chỉ: 123 Đường Láng, Quận Đống Đa, Hà Nội</p>
                     <p>Email: <a href="mailto:contact@haithangban.com"
                             class="text-white text-decoration-none">contact@haithangban.com</a></p>
@@ -314,7 +314,7 @@
                 </div>
                 <div class="col-md-6 text-md-end">
                     <h5>Về chúng tôi</h5>
-                    <p>Được thành lập bởi hai người bạn thân, chúng tôi mang đến những sản phẩm công nghệ chất lượng với
+                    <p>Được thành lập bởi Hải Và Hùng , chúng tôi mang đến những sản phẩm Táo Xanh , Táo Dỏ chất lượng với
                         giá cả hợp lý.</p>
                 </div>
             </div>

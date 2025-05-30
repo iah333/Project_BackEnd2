@@ -93,9 +93,8 @@ class UserController extends Controller
         $user = User::findOrFail($id);
 
         if ($user->id === Auth::id()) {
-            return back()->with('error', 'Bạn không thể tự xóa chính mình.');
+            return back()->with('error', 'Bạn không thể tự xóa chính mình');
         }
-
         if ($user->is_admin && !$user->super_admin) {
             if (!Auth::user()->super_admin) {
                 return back()->with('error', 'Bạn không có quyền xóa tài khoản admin.');
